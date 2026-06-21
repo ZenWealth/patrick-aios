@@ -12,6 +12,8 @@
 ./context/sustain-momentum/strategy.md
 ./context/gaia/overview.md
 ./context/gaia/strategy.md
+HISTORY.md
+docs/_index.md
 
 ## Summary
 
