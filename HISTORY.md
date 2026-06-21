@@ -15,3 +15,6 @@
 - Set up Git tracking and connected to GitHub
 - Created documentation system (docs/ folder with routing index)
 - Installed /commit command for structured commits with auto-documentation
+
+### InfraOS Test
+- Testing the /commit workflow
