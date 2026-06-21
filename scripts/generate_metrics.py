@@ -114,6 +114,28 @@ def section_ga4(conn):
     return lines
 
 
+def section_meetings(conn):
+    """Recent meetings from Fireflies, classified by venture."""
+    if not table_exists(conn, "meetings"):
+        return []
+    lines = ["## Recent Meetings (last 14 days)"]
+    rows = query_all(conn, """
+        SELECT date, title, venture, duration_minutes FROM meetings
+        WHERE date >= date('now', '-14 days')
+        ORDER BY date DESC
+    """)
+    if rows:
+        lines.append("| Date | Venture | Title | Duration |")
+        lines.append("|------|---------|-------|----------|")
+        for r in rows:
+            duration = f"{r['duration_minutes']} min" if r['duration_minutes'] else "-"
+            lines.append(f"| {r['date']} | {r['venture']} | {r['title']} | {duration} |")
+    else:
+        lines.append("_No meetings recorded in the last 14 days._")
+    lines.append("")
+    return lines
+
+
 # ============================================================
 # MAIN GENERATOR
 # ============================================================
@@ -122,6 +144,7 @@ def section_ga4(conn):
 SECTIONS = [
     section_fx_rates,
     section_ga4,
+    section_meetings,
 ]
 
 

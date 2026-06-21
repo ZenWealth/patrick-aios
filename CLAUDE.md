@@ -190,6 +190,7 @@ This workspace has a local SQLite data warehouse (`data/data.db`) collecting dai
 
 - **FX rates** — daily exchange rates (GBP base vs AUD/CAD/EUR/USD)
 - **Google Analytics (GA4)** — website traffic for sustain-momentum.com (more sites can be added once GA4 is installed on goiatechnologies.com and targeted.support)
+- **Fireflies.ai** — meeting transcripts, summaries, and action items, automatically classified by venture (GOIA / Sustain Momentum / GAIA / NED / General) based on title and participants
 
 `context/group/key-metrics.md` is auto-generated from the database and read by `/prime` every session — Claude always has current numbers without being told. For deeper analysis, Claude can query `data/data.db` directly via Python's `sqlite3` module — load `reference/data-access.md` for full table schemas and example SQL queries.
 

@@ -16,8 +16,12 @@
 |------|----------|-------|------------|-------------|-------|
 | SUSTAIN_MOMENTUM | 0 | 0 | 0 | 0.0% | 2026-06-21 |
 
+## Recent Meetings (last 14 days)
+_No meetings recorded in the last 14 days._
+
 ## Data Freshness
 | Source | Latest Record | Status |
 |--------|---------------|--------|
 | fx_rates | 2026-06-19 | Connected |
 | ga4_daily | 2026-06-21 | Connected |
+| meetings | - | Empty |

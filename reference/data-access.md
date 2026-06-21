@@ -26,6 +26,7 @@ Claude can run SQL directly in sessions using this pattern — no need to go thr
 |---|---|---|---|
 | FX Rates (Frankfurter API) | `fx_rates` | `scripts/collect_fx_rates.py` | Daily exchange rates, GBP base, vs AUD/CAD/EUR/USD |
 | Google Analytics (GA4) | `ga4_daily` | `scripts/collect_ga4.py` | Daily website traffic per site — sessions, users, page views, bounce rate |
+| Fireflies.ai | `meetings` | `scripts/collect_fireflies.py` | Meeting transcripts, summaries, action items — classified by venture (GOIA/SUSTAIN_MOMENTUM/GAIA/NED/GENERAL) via keyword matching |
 
 **Not yet connected:** GOIA (goiatechnologies.com) and Targeted Support (targeted.support) don't have GA4 installed yet. Once they do, add `GA4_PROPERTY_ID_GOIA` and `GA4_PROPERTY_ID_TARGETED_SUPPORT` to `.env` — the collector auto-discovers any `GA4_PROPERTY_ID_*` entry, no code changes needed.
 
@@ -57,6 +58,31 @@ Primary key: (date, currency)
 | collected_at | TEXT | UTC timestamp of collection |
 
 Primary key: (date, site)
+
+### meetings
+| Column | Type | Description |
+|---|---|---|
+| meeting_id | TEXT | Unique ID, prefixed `fireflies_` |
+| title | TEXT | Meeting title |
+| date | TEXT | Meeting date (YYYY-MM-DD) |
+| start_time | TEXT | Start time (HH:MM:SS UTC) |
+| duration_minutes | INTEGER | Length of meeting |
+| participants | TEXT | JSON array of `{name, email}` |
+| transcript_text | TEXT | Full transcript, `[Speaker] text` per line |
+| summary | TEXT | Fireflies-generated summary |
+| action_items_raw | TEXT | JSON array of action items, if any |
+| venture | TEXT | GOIA / SUSTAIN_MOMENTUM / GAIA / NED / GENERAL — classified by keyword match against title + participants |
+| external_url | TEXT | Link to the Fireflies recording |
+| collected_at | TEXT | UTC timestamp of collection |
+
+Primary key: `meeting_id`. Collection looks back 7 days each run (`LOOKBACK_DAYS` in `collect_fireflies.py`) — safe to run daily without gaps.
+
+**Venture classification keywords** (edit `VENTURE_KEYWORDS` in `scripts/collect_fireflies.py` to adjust):
+- GOIA: goia, gerard, ouattara, boardsignal, complyport, cyber governance
+- SUSTAIN_MOMENTUM: sustain momentum, targeted support, agbr, clarity call/review
+- GAIA: gaia
+- NED: ned, non-exec, board advisory, nurole, criticaleye, headhunter
+- Anything else falls into GENERAL
 
 ### collection_log
 Tracks every collection run (success/skipped/error) across all sources. Columns: `id`, `collected_at`, `source`, `status`, `reason`, `records_written`.
@@ -106,6 +132,21 @@ SELECT * FROM collection_log
 WHERE status != 'success'
 ORDER BY collected_at DESC
 LIMIT 20;
+```
+
+**Find a meeting by keyword (title or transcript):**
+```sql
+SELECT date, title, venture, summary FROM meetings
+WHERE title LIKE '%ComplyPort%' OR transcript_text LIKE '%ComplyPort%'
+ORDER BY date DESC;
+```
+
+**Meetings by venture, last 30 days:**
+```sql
+SELECT venture, COUNT(*) AS meeting_count, SUM(duration_minutes) AS total_minutes
+FROM meetings
+WHERE date >= date('now', '-30 days')
+GROUP BY venture;
 ```
 
 ---
