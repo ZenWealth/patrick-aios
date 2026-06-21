@@ -97,12 +97,23 @@ These are how you know your AIOS is working:
 │   ├── gaia/                # GAIA — AI financial planning platform
 │   │   ├── overview.md      # Vision and proposition
 │   │   └── strategy.md      # Development stage and next steps
-│   └── import/              # Drop documents here for Claude to analyze
+│   ├── import/               # Drop documents here for Claude to analyze
+│   └── group/
+│       └── key-metrics.md   # Auto-generated current metrics (from DB) — read by /prime
 ├── module-installs/         # AIOS modules — drop module folders here, install with /install
 ├── plans/                   # Implementation plans created by /create-plan
 ├── outputs/                 # Work products and deliverables
-├── reference/               # Templates, examples, reusable patterns
-├── scripts/                 # Automation scripts (added by modules)
+├── reference/
+│   └── data-access.md       # Full table schemas, SQL queries, collection details
+├── data/
+│   └── data.db               # SQLite database — all metrics, daily snapshots
+├── scripts/
+│   ├── db.py                 # Database framework
+│   ├── config.py              # .env loader
+│   ├── collect.py             # Collection orchestrator — runs all collect_*.py files
+│   ├── collect_*.py           # Individual data source collectors
+│   └── generate_metrics.py    # Regenerates key-metrics.md from the database
+├── credentials/               # Service account JSON files (gitignored)
 └── shares/                  # Packaged systems for sharing (created by /share)
 ```
 
@@ -157,6 +168,12 @@ Reads the plan, executes each step in order, validates the work, and updates the
 
 Example: `/implement plans/2026-01-28-competitor-analysis-command.md`
 
+### /update-data
+
+**Purpose:** Refresh business metrics on demand.
+
+Runs `python scripts/collect.py` to pull fresh data from all connected sources and regenerate `context/group/key-metrics.md`. A scheduled task also runs this automatically each morning — use this command when you want fresher numbers mid-session.
+
 ### /share [system or feature]
 
 **Purpose:** Package a system or feature from your workspace for sharing.
@@ -166,6 +183,17 @@ Deep-dives the code first to fully understand it, then produces a self-contained
 Example: `/share the daily brief system`
 
 ---
+
+## Data
+
+This workspace has a local SQLite data warehouse (`data/data.db`) collecting daily snapshots from connected business data sources:
+
+- **FX rates** — daily exchange rates (GBP base vs AUD/CAD/EUR/USD)
+- **Google Analytics (GA4)** — website traffic for sustain-momentum.com (more sites can be added once GA4 is installed on goiatechnologies.com and targeted.support)
+
+`context/group/key-metrics.md` is auto-generated from the database and read by `/prime` every session — Claude always has current numbers without being told. For deeper analysis, Claude can query `data/data.db` directly via Python's `sqlite3` module — load `reference/data-access.md` for full table schemas and example SQL queries.
+
+A scheduled task runs `scripts/collect.py` daily to keep the database current.
 
 ## Getting Started
 
