@@ -196,6 +196,19 @@ This workspace has a local SQLite data warehouse (`data/data.db`) collecting dai
 
 A scheduled task runs `scripts/collect.py` daily to keep the database current.
 
+## CommandOS — Telegram AI Assistant
+
+Patrick has a Telegram bot ("Command Centre" group, bot: @patrick_command_bot) running as a 24/7 systemd service on a Hostinger VPS, deployed from this same GitHub repo (`patrick-aios`).
+
+- Bot code lives in `apps/command/` — customized in `worker.py` to know about GOIA, Sustain Momentum, GAIA, and the NED portfolio
+- `/new` spawns a dedicated agent thread; `/name` renames it; `/compact` compresses context; `/reboot` restarts the bot
+- The bot has full workspace access — files, the database, web search, code execution
+- Persistent sessions survive restarts
+- Deployment guide: `outputs/commandos-vps-deployment.md`
+- VPS-side commands: `systemctl status command-bot`, `journalctl -u command-bot -f`, `systemctl restart command-bot`
+
+To deploy workspace changes to the live bot: push to GitHub, then on the VPS run `git pull && systemctl restart command-bot` (as root, or as `patrick` with sudo once a password is set).
+
 ## Getting Started
 
 **First time?** Start here:
