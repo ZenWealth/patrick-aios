@@ -15,12 +15,14 @@
 HISTORY.md
 docs/_index.md
 context/group/key-metrics.md
+gtd/dashboard.md
 
 ## On-Demand Loading
 
 Not read during /prime — load only when a task needs deeper detail:
 
 - `reference/data-access.md` — Full database table schemas, SQL query examples, collection scripts
+- `reference/gtd-methodology.md` — GTD decision tree, weekly review process, full methodology
 
 ## Summary
 
@@ -31,4 +33,5 @@ After reading, provide:
 3. What commands are available
 4. A summary of my/our current strategies and priorities
 5. **Data status** — Review key-metrics.md data freshness. Flag anything stale (>2 days old). Note you can run live SQL queries against `data/data.db` (load `reference/data-access.md` for schemas).
-6. Confirmation you're ready to help me with pursuing these goals through use of this workspace
+6. **GTD status** — Note inbox count (if non-zero, suggest running `/process`), active projects by area, and anything flagged/urgent from the dashboard.
+7. Confirmation you're ready to help me with pursuing these goals through use of this workspace

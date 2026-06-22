@@ -1,6 +1,6 @@
 # Key Metrics
 
-> Auto-generated from database. Last updated: 2026-06-21
+> Auto-generated from database. Last updated: 2026-06-22
 > Source: `data/data.db` | Regenerate: `python scripts/generate_metrics.py`
 
 ## Exchange Rates
@@ -14,7 +14,7 @@
 ## Website Traffic (GA4)
 | Site | Sessions | Users | Page Views | Bounce Rate | As Of |
 |------|----------|-------|------------|-------------|-------|
-| SUSTAIN_MOMENTUM | 0 | 0 | 0 | 0.0% | 2026-06-21 |
+| SUSTAIN_MOMENTUM | 0 | 0 | 0 | 0.0% | 2026-06-22 |
 
 ## Recent Meetings (last 14 days)
 _No meetings recorded in the last 14 days._
@@ -23,5 +23,5 @@ _No meetings recorded in the last 14 days._
 | Source | Latest Record | Status |
 |--------|---------------|--------|
 | fx_rates | 2026-06-19 | Connected |
-| ga4_daily | 2026-06-21 | Connected |
+| ga4_daily | 2026-06-22 | Connected |
 | meetings | - | Empty |

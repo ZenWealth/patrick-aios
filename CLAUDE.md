@@ -100,11 +100,21 @@ These are how you know your AIOS is working:
 │   ├── import/               # Drop documents here for Claude to analyze
 │   └── group/
 │       └── key-metrics.md   # Auto-generated current metrics (from DB) — read by /prime
+├── gtd/                      # GTD productivity system (ProductivityOS)
+│   ├── dashboard.md          # Operational hub — read by /prime every session
+│   ├── inbox.md               # Raw capture — process with /process
+│   ├── projects.md            # By area: GOIA, Sustain Momentum, GAIA, NED, Personal
+│   ├── next-actions.md        # By context: @me, @claude, @calls, @team, @errands, @think, @record
+│   ├── waiting-for.md         # Delegated items
+│   ├── someday-maybe.md       # Parked ideas
+│   ├── areas.md                # Standards to maintain, reviewed weekly
+│   └── review-checklist.md    # Weekly review protocol + decision tree
 ├── module-installs/         # AIOS modules — drop module folders here, install with /install
 ├── plans/                   # Implementation plans created by /create-plan
 ├── outputs/                 # Work products and deliverables
 ├── reference/
-│   └── data-access.md       # Full table schemas, SQL queries, collection details
+│   ├── data-access.md       # Full table schemas, SQL queries, collection details
+│   └── gtd-methodology.md   # Full GTD methodology reference
 ├── data/
 │   └── data.db               # SQLite database — all metrics, daily snapshots
 ├── scripts/
@@ -123,6 +133,7 @@ These are how you know your AIOS is working:
 | ------------------ | -------------------------------------------------------------------------------------- |
 | `context/`         | Who you are, your business, current priorities, strategies. Read by `/prime`.           |
 | `context/import/`  | Drop any docs here (business plans, ChatGPT exports, etc.) for Claude to analyze.      |
+| `gtd/`             | GTD task/project system. Capture to inbox.md, clear with `/process`, review weekly with `/review`. |
 | `module-installs/` | AIOS modules go here. Install them with `/install module-installs/{module-name}`.      |
 | `plans/`           | Detailed implementation plans. Created by `/create-plan`, executed by `/implement`.    |
 | `outputs/`         | Deliverables, analyses, reports, and work products.                                    |
@@ -173,6 +184,18 @@ Example: `/implement plans/2026-01-28-competitor-analysis-command.md`
 **Purpose:** Refresh business metrics on demand.
 
 Runs `python scripts/collect.py` to pull fresh data from all connected sources and regenerate `context/group/key-metrics.md`. A scheduled task also runs this automatically each morning — use this command when you want fresher numbers mid-session.
+
+### /process
+
+**Purpose:** Empty the GTD inbox to zero.
+
+Walks through every item in `gtd/inbox.md` using the GTD decision tree — routes each to projects, next-actions, waiting-for, someday-maybe, or trash. Refreshes the dashboard when done.
+
+### /review
+
+**Purpose:** Guided weekly GTD review.
+
+Walks through a 4-phase process: empty the inbox, review all lists, check for stuck projects, brainstorm new ideas. Keeps the whole system trustworthy. Recommended weekly (Friday is the GTD default).
 
 ### /share [system or feature]
 
