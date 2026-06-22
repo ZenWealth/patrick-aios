@@ -7,11 +7,15 @@
 
 ## GOIA Technologies
 
-_(No projects yet — they'll be added as you process your inbox)_
+### Document and share the GOIA AIOS workspace
+- **Outcome:** Gerard (and anyone else relevant) understands the goia-aios workspace — what it contains, how to use it, where to find things
+- **Next action:** @team — Schedule a walkthrough session with Gerard covering the goia-aios workspace (company.md, team.md, services.md, methodology.md, strategy.md, current-data.md)
 
 ## Sustain Momentum
 
-_(No projects yet)_
+### Develop D2C financial guidance process
+- **Outcome:** A defined, repeatable consumer clarity coaching process (Clarity Check → Personal Clarity Review → Clarity Call), documented and ready to deliver consistently
+- **Next action:** @think — Reflect on the framework: what's the core methodology underpinning each stage, and how does it connect to the BEA (Behavioural Execution Architecture)
 
 ## GAIA
 
