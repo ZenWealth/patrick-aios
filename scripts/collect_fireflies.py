@@ -5,8 +5,12 @@ Pulls meeting transcripts from Fireflies and classifies each one by venture
 (GOIA, Sustain Momentum, GAIA, NED, or general) using keyword matching
 against the meeting title and participant names/emails.
 
+Supports multiple Fireflies accounts - e.g. Patrick's own account plus
+Gerard's (who organizes the weekly GOIA call on his own Fireflies).
+
 Requires:
-    FIREFLIES_API_KEY - from app.fireflies.ai/integrations
+    FIREFLIES_API_KEY - Patrick's own key, from app.fireflies.ai/integrations
+    FIREFLIES_API_KEY_<NAME> - additional accounts, e.g. FIREFLIES_API_KEY_GERARD
 
 Tables created: meetings
 """
@@ -18,7 +22,7 @@ from pathlib import Path
 from datetime import datetime, timedelta, timezone
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from config import get_env  # noqa: E402
+from config import get_env, get_env_prefixed  # noqa: E402
 
 try:
     import requests
@@ -96,10 +100,45 @@ def _build_participants(attendees):
     return participants
 
 
+def _fetch_transcripts(api_key, since_date):
+    """Fetch all transcripts for one Fireflies account since a given date."""
+    headers = {"Authorization": f"Bearer {api_key}", "Content-Type": "application/json"}
+    all_transcripts = []
+    skip = 0
+    limit = 50
+
+    while True:
+        variables = {"fromDate": since_date, "limit": limit, "skip": skip}
+        resp = requests.post(
+            FIREFLIES_ENDPOINT, headers=headers,
+            json={"query": TRANSCRIPTS_QUERY, "variables": variables},
+            timeout=60,
+        )
+        resp.raise_for_status()
+        data = resp.json()
+        if "errors" in data:
+            raise RuntimeError(data["errors"][0].get("message", "Unknown error"))
+
+        transcripts = data.get("data", {}).get("transcripts", [])
+        if not transcripts:
+            break
+        all_transcripts.extend(transcripts)
+        if len(transcripts) < limit:
+            break
+        skip += limit
+
+    return all_transcripts
+
+
 def collect():
-    """Collect Fireflies transcripts from the last LOOKBACK_DAYS days."""
-    api_key = get_env("FIREFLIES_API_KEY")
-    if not api_key:
+    """Collect Fireflies transcripts from the last LOOKBACK_DAYS days, across all connected accounts."""
+    accounts = {}
+    main_key = get_env("FIREFLIES_API_KEY")
+    if main_key:
+        accounts["PATRICK"] = main_key
+    accounts.update(get_env_prefixed("FIREFLIES_API_KEY_"))
+
+    if not accounts:
         return {
             "source": "fireflies", "status": "skipped",
             "reason": "Missing FIREFLIES_API_KEY in .env"
@@ -108,34 +147,24 @@ def collect():
     since_dt = datetime.now(timezone.utc) - timedelta(days=LOOKBACK_DAYS)
     since_date = since_dt.strftime("%Y-%m-%dT00:00:00Z")
 
-    headers = {"Authorization": f"Bearer {api_key}", "Content-Type": "application/json"}
     all_transcripts = []
-    skip = 0
-    limit = 50
-
-    try:
-        while True:
-            variables = {"fromDate": since_date, "limit": limit, "skip": skip}
-            resp = requests.post(
-                FIREFLIES_ENDPOINT, headers=headers,
-                json={"query": TRANSCRIPTS_QUERY, "variables": variables},
-                timeout=60,
-            )
-            resp.raise_for_status()
-            data = resp.json()
-            if "errors" in data:
-                return {"source": "fireflies", "status": "error",
-                        "reason": data["errors"][0].get("message", "Unknown error")}
-
-            transcripts = data.get("data", {}).get("transcripts", [])
-            if not transcripts:
-                break
+    for account_name, api_key in accounts.items():
+        try:
+            transcripts = _fetch_transcripts(api_key, since_date)
             all_transcripts.extend(transcripts)
-            if len(transcripts) < limit:
-                break
-            skip += limit
-    except Exception as e:
-        return {"source": "fireflies", "status": "error", "reason": str(e)}
+        except Exception as e:
+            return {"source": "fireflies", "status": "error",
+                    "reason": f"{account_name}: {e}"}
+
+    # De-duplicate by transcript id (in case the same meeting appears in both accounts)
+    seen_ids = set()
+    deduped = []
+    for t in all_transcripts:
+        tid = t.get("id")
+        if tid and tid not in seen_ids:
+            seen_ids.add(tid)
+            deduped.append(t)
+    all_transcripts = deduped
 
     meetings = []
     for t in all_transcripts:

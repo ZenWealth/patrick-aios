@@ -77,6 +77,8 @@ Primary key: (date, site)
 
 Primary key: `meeting_id`. Collection looks back 7 days each run (`LOOKBACK_DAYS` in `collect_fireflies.py`) — safe to run daily without gaps.
 
+**Multiple Fireflies accounts:** the collector reads `FIREFLIES_API_KEY` (Patrick's own account) plus any `FIREFLIES_API_KEY_<NAME>` entries (e.g. `FIREFLIES_API_KEY_GERARD`), merging and de-duplicating by transcript ID. Useful when a meeting is organized and recorded on someone else's Fireflies account — like the weekly GOIA call, which Gerard organizes.
+
 **Venture classification keywords** (edit `VENTURE_KEYWORDS` in `scripts/collect_fireflies.py` to adjust):
 - GOIA: goia, gerard, ouattara, boardsignal, complyport, cyber governance
 - SUSTAIN_MOMENTUM: sustain momentum, targeted support, agbr, clarity call/review
