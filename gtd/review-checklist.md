@@ -1,6 +1,6 @@
 # Weekly Review Checklist
 
-> Run with `/review`. Target: 30-60 minutes. Friday recommended.
+> Run with `/review`. Target: 30-60 minutes. **Saturday morning** — aligned with Patrick's goal-setting process so both stay grounded in the same reality.
 
 ---
 
@@ -29,6 +29,7 @@
 - [ ] Scan `gtd/someday-maybe.md` — activate, delete, or add?
 - [ ] Scan `gtd/areas.md` — any area neglected? missing a project?
 - [ ] Open brainstorm — any big ideas from this review?
+- [ ] **Goal-setting check** — cross-reference active projects against current strategic priorities (`context/goia/strategy.md`, `context/sustain-momentum/strategy.md`, `context/gaia/strategy.md`). Do this week's projects still serve this quarter's goals? Anything goals-related missing from the GTD lists?
 
 ---
 

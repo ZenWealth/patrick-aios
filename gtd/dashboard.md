@@ -1,7 +1,7 @@
 # GTD Dashboard
 
 > **Projects:** 2 active | **Next Actions:** 4 defined | **Waiting For:** 0 items
-> **Last Review:** — | **Next Review:** —
+> **Last Review:** — | **Next Review:** 2026-06-27 (Saturday)
 
 ---
 
