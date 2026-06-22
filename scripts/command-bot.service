@@ -1,0 +1,19 @@
+[Unit]
+Description=CommandOS - Telegram AI Command Bot
+After=network.target
+
+[Service]
+Type=simple
+User=patrick
+WorkingDirectory=/home/patrick/patrick-aios
+ExecStart=/home/patrick/patrick-aios/.venv/bin/python -m apps.command.main
+Restart=always
+RestartSec=5
+StandardOutput=append:/home/patrick/patrick-aios/data/command.stdout.log
+StandardError=append:/home/patrick/patrick-aios/data/command.stderr.log
+
+Environment=HOME=/home/patrick
+Environment=PATH=/usr/local/bin:/usr/bin:/bin
+
+[Install]
+WantedBy=multi-user.target
