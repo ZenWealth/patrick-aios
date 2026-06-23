@@ -1,7 +1,7 @@
 # Plan: Titan LifeMap — AIOS Discovery & Planning Engine
 
 **Created:** 2026-06-23
-**Status:** Draft
+**Status:** Implemented
 **Request:** Build a structured, modular conversational discovery system (Titan LifeMap™) branded under Patrick's trademarked Titan Mindset framework, replacing the original Chatbase-based fact-find idea, and serving as the first concrete expression of the GAIA proposition.
 
 ---
@@ -465,3 +465,32 @@ The implementation is complete when:
 - This plan deliberately avoided reading deeper into the Titan Mindset manuscript PDFs beyond what Patrick already typed directly in conversation, since his direct description is authoritative and avoids any risk of the plan itself being built from a hard-to-parse or incomplete extraction.
 - **Configuration-over-code is a constraint added before implementation began**, per Patrick's explicit instruction: "Build for adaptability rather than optimisation... create Version 1 quickly, test it with real users, then iterate rapidly." Every step above was rewritten against this constraint rather than treating it as a later refactor — this matters because retrofitting config-driven architecture onto already-hardcoded logic is significantly more expensive than building it that way from the start.
 - **The Internal AI Profile is the most architecturally significant addition.** Per Patrick: "The client sees the report. GAIA sees the person." Any future plan involving personalization, returning users, or cross-session memory should treat `titan_internal_profiles` as the foundational data source — this is explicitly designed to outlast any individual report format or even the Titan LifeMap product itself.
+
+---
+
+## Implementation Notes
+
+**Implemented:** 2026-06-23
+
+### Summary
+
+- Steps 1-4 (context docs, IP boundary, data model, DB schema): committed during initial implementation pass
+- Steps 5-6 (all config YAML files, conversation engine, FastAPI app): committed in one batch — pyyaml install unblocked after PowerShell `| tail` issue resolved
+- Steps 7-9 (analysis engine, four report generators, routing layer): committed together
+- Steps 10-12 (VPS deployment doc, CLAUDE.md, HISTORY.md, plan status): final wrap-up commit
+
+Config validated at every step: `python apps/titan_lifemap/config_loader.py` outputs "All config valid. 5 stages loaded: ['visionary', 'sage', 'builder', 'steward', 'guardian']"
+
+All imports verified in .venv. DB migration for `conversation_history` column handled via ALTER TABLE on first connect.
+
+### Deviations from Plan
+
+- `conversation.py` uses the Anthropic messages API directly rather than the Claude Agent SDK — the Agent SDK is designed for agentic file-reading tasks, not real-time chat. This is the correct architecture for a user-facing conversation.
+- `reports/internal.py` is a read/formatting module (reads from titan_internal_profiles written by analysis.py) rather than a report generator — the Internal AI Profile is produced entirely in analysis.py as the second JSON block of the analysis pass, which is cleaner than a separate generation call.
+- Stage completion detection uses `[STAGE_COMPLETE]` sentinel in Claude's response. This is a simple, reliable convention documented in `prompts/conversation.yaml`.
+- WeasyPrint system library installation (libpango etc.) deferred to VPS deployment step — not blocking for local import validation.
+
+### Issues Encountered
+
+- pyyaml not installed in .venv: resolved by running `pip install -q pyyaml` without PowerShell's `| tail` pipe (which caused silent failure)
+- DB already existed without `conversation_history` column: resolved with ALTER TABLE migration in `init_db()` on first connect

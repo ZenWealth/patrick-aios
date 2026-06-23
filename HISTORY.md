@@ -8,6 +8,29 @@
 
 ---
 
+## 2026-06-23
+
+### Titan LifeMap v1 — Full Implementation (Steps 1-12)
+
+**What was built:**
+- Config-driven AI discovery engine: five stages (Visionary → Sage → Builder → Steward → Guardian), all content in YAML under `apps/titan_lifemap/config/` — questions, scoring weights, report section instructions, Claude system prompts
+- FastAPI backend (`apps/titan_lifemap/main.py`): `/session/start`, `/session/{id}/message`, `/session/{id}/status`, `/session/{id}/complete`
+- Conversation engine (`conversation.py`): Anthropic messages API, stage sequencing, contact capture at Steward stage, conversation history persisted in DB
+- Analysis engine (`analysis.py`): post-session Claude scoring pass — Clarity Score, Momentum Plan, Behavioural Friction Profile; all weights from scoring_rules.yaml
+- Four report generators (`reports/`): consumer, coaching, adviser, Internal AI Profile — Jinja2 HTML → WeasyPrint PDF
+- Internal AI Profile: auto-generated on every completion, stored in `titan_internal_profiles`, NO API endpoint, never client-visible. "The client sees the report. GAIA sees the person."
+- Routing layer (`routing.py`): lead storage, Google Workspace SMTP, Make.com webhook
+- Six Titan LifeMap tables in shared `data/data.db`: sessions, soft_facts, hard_facts, scores, internal_profiles, leads
+- IP boundary documented (`context/titan-lifemap/ip-boundary.md`): all questions are original to this project
+- Full documentation: architecture doc, config schema guide, VPS deployment guide
+- CLAUDE.md and docs/_index.md updated
+
+**Architecture principle:** Content is YAML, code is structure. Changing behaviour = changing config, not Python.
+
+**VPS deployment:** `outputs/titan-lifemap-vps-deployment.md` — systemd service `titan-lifemap`, nginx reverse proxy, Certbot SSL for api.sustain-momentum.com
+
+---
+
 ## 2026-06-21
 
 ### Initial Setup

@@ -115,6 +115,19 @@ These are how you know your AIOS is working:
 ├── reference/
 │   ├── data-access.md       # Full table schemas, SQL queries, collection details
 │   └── gtd-methodology.md   # Full GTD methodology reference
+├── apps/
+│   ├── command/              # CommandOS — Telegram AI assistant bot
+│   └── titan_lifemap/        # Titan LifeMap — AI financial discovery engine (GAIA)
+│       ├── config/           # All content in YAML: stages, scoring, prompts, report templates
+│       ├── reports/          # Four report generators (consumer, coaching, adviser, internal)
+│       ├── templates/        # Jinja2 HTML templates for PDF report rendering
+│       ├── config_loader.py  # Only module that reads YAML — fails loudly on errors
+│       ├── models.py         # Pydantic data models
+│       ├── db.py             # titan_* tables in shared data/data.db
+│       ├── conversation.py   # Five-stage discovery engine (Anthropic messages API)
+│       ├── analysis.py       # Post-session scoring pass (all weights from config)
+│       ├── routing.py        # Lead storage, SMTP email, Make.com webhook
+│       └── main.py           # FastAPI app — api.sustain-momentum.com
 ├── data/
 │   └── data.db               # SQLite database — all metrics, daily snapshots
 ├── scripts/
@@ -218,6 +231,25 @@ This workspace has a local SQLite data warehouse (`data/data.db`) collecting dai
 `context/group/key-metrics.md` is auto-generated from the database and read by `/prime` every session — Claude always has current numbers without being told. For deeper analysis, Claude can query `data/data.db` directly via Python's `sqlite3` module — load `reference/data-access.md` for full table schemas and example SQL queries.
 
 A scheduled task runs `scripts/collect.py` daily to keep the database current.
+
+## Titan LifeMap — AI Financial Discovery Engine (GAIA)
+
+A config-driven, five-stage discovery conversation that gathers soft facts (life vision, values, legacy, behavioural friction) and hard facts (income, assets, liabilities) from a user. Built for [sustain-momentum.com](https://sustain-momentum.com) as the first GAIA product.
+
+**Architecture:** FastAPI backend on Hostinger VPS at `api.sustain-momentum.com`. All content (questions, scoring weights, report structure, prompts) lives in YAML under `apps/titan_lifemap/config/`. Python contains structural logic only.
+
+**Stages:** Visionary → Sage → Builder → Steward → Guardian. Contact details requested at Steward, financial data from Steward onward.
+
+**Reports:** Three client-facing (consumer / coaching / adviser), one Internal AI Profile that is never client-visible, has no API endpoint, and is stored only in `titan_internal_profiles`. "The client sees the report. GAIA sees the person."
+
+**Config principle:** After editing any YAML file, run `python apps/titan_lifemap/config_loader.py` to validate. The loader fails loudly — broken config never reaches a live session.
+
+**IP boundary:** All discovery questions are original to this project. CEG's Total Client Profile (Prince & Associates) and similar proprietary frameworks must not be quoted or closely paraphrased. See `context/titan-lifemap/ip-boundary.md`.
+
+**Key docs:** `docs/titan-lifemap-architecture.md` (components), `docs/titan-lifemap-config-guide.md` (YAML schema reference).
+**VPS deployment:** `outputs/titan-lifemap-vps-deployment.md`
+
+---
 
 ## CommandOS — Telegram AI Assistant
 
