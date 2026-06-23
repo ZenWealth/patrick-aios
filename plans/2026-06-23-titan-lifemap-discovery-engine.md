@@ -112,15 +112,26 @@ None.
 - **Build directly into WordPress (PHP plugin)**: Rejected — would duplicate the Python/Claude Agent SDK logic already proven in CommandOS, and Patrick is not a developer who could maintain PHP code. A thin JavaScript widget calling out to the Python API (which Claude maintains) is more sustainable.
 - **Single combined report instead of three**: Rejected — the three audiences (consumer, coach, adviser) need fundamentally different framing and detail level; combining them would either overwhelm consumers or underserve advisers.
 
-### Open Questions
+### Resolved Decisions (formerly Open Questions)
 
-These need Patrick's input before or during implementation — flagged here rather than guessed at:
+All five were resolved by Patrick on 2026-06-23:
 
-1. **Hosting/domain for the API**: Will the Titan LifeMap API live at a subdomain (e.g. `api.sustain-momentum.com`) or a path on the existing VPS IP? Affects SSL setup and WordPress widget configuration.
-2. **Frontend widget technology**: Does 10Web/WordPress support a custom JavaScript embed easily, or does this need a specific WordPress plugin/page builder approach? Patrick should confirm what's editable on the current site.
-3. **Authentication/session handling for anonymous website visitors**: How does a visitor's in-progress Titan LifeMap session get identified across page loads — a generated session token in a cookie, an email-gate at the start, something else?
-4. **Which specific behavioural patterns map to BEA**: Patrick referenced "aligns directly with the Behavioural Execution Architecture" for the Behavioural Patterns category — the BEA framework details (from the white papers) should inform `analysis.py`'s scoring logic; this plan assumes access to the BEA white paper content already read earlier in this workspace's history, but Patrick should confirm the six BEA components map cleanly to the six behavioural friction patterns listed (procrastination, avoidance, overthinking, impulsiveness, delegation, lack of confidence).
-5. **CRM and email tool choice**: Needed before Phase 5 can be implemented for real (currently stubbed).
+1. **Hosting/domain**: VPS-hosted, not WordPress-coupled. Structure: `sustain-momentum.com` (marketing website, WordPress/10Web) → `api.sustain-momentum.com` (Titan LifeMap / GAIA API, VPS) → `app.sustain-momentum.com` (future client portal, VPS, not built in this plan). This keeps GAIA decoupled from the website so it can become a standalone commercial platform later without a migration. DNS for `api.sustain-momentum.com` needs to point to the VPS IP; SSL via Let's Encrypt/Certbot during deployment (Step 10).
+2. **Frontend widget**: 10Web supports custom HTML/JS/iframe embeds — exact method decided later. Architecture principle: **the website is a presentation layer, the VPS is the application layer**. Website page embeds the Titan LifeMap experience, which calls the API on `api.sustain-momentum.com`. WordPress performs no application logic. (Frontend embed itself remains out of scope for this plan, per the original Notes section — this just confirms the technical path is feasible.)
+3. **Session handling**: Friction-free start — no contact details required upfront. Flow: visitor starts immediately, completes Visionary and Sage stages anonymously under a server-generated session token (cookie-based), contact details (first name + email) requested at an appropriate point — typically just before report generation. Server-side session storage in `data/data.db`; if a session expires, the user restarts (no complex resume-by-email flow needed initially).
+4. **Behavioural Friction vs. BEA**: Kept explicitly separate, not merged. **Behavioural Friction Profile = diagnosis** (what we observe: procrastination, avoidance, overthinking, impulsiveness, excessive delegation, lack of confidence). **BEA = intervention** (how we respond, per the existing BEA framework from Patrick's white paper). The relationship is one-directional: diagnosis feeds into which BEA intervention gets recommended, but the two frameworks are not collapsed into one. `analysis.py` produces the Behavioural Friction Profile only — BEA-based recommendations are a downstream consumer of that profile, not part of the scoring itself, and may be addressed in a future plan once Titan LifeMap's diagnostic side is proven.
+5. **CRM and email**: No CRM in Phase 1 — deliberately deferred until demand is proven. Stack: **Google Workspace** for email delivery, **Make.com** for workflow automation, **database within GAIA** (i.e. `data/data.db`) for lead/profile storage. Flow: complete Titan LifeMap → report generated → email delivered (via Google Workspace, likely triggered through Make.com) → lead stored in the database. `routing.py` (Step 9) should be built against this simpler stack, not speculative CRM interfaces.
+
+### Guiding Design Principle (added 2026-06-23)
+
+Patrick set this as the philosophy that should drive every design decision in this build:
+
+> "The objective is not to build a better fact-find. The objective is to build a Behavioural Discovery Engine. Most systems ask 'what do you own?' Titan LifeMap should ask 'what matters most?' Most systems gather data. Titan LifeMap should generate clarity. Financial information supports the conversation. It does not lead it."
+
+Practical implications for implementation:
+- In `stages.py`, every stage's framing and questions should orient toward clarity and meaning before any financial detail — this is already the Visionary→Sage→Builder→Steward→Guardian sequence, but the *tone* of the writing (Step 5) must reinforce it, not just the ordering.
+- In `analysis.py` and the report generators (Step 7-8), lead every output with "where you are / where you want to go / what is stopping you / what should happen next" — not with net worth or asset summaries.
+- Financial data (hard facts) should read as supporting evidence within the narrative, never as the headline.
 
 ---
 
@@ -238,11 +249,15 @@ Document the framework and the IP boundary before writing any code, so the reaso
 
 ---
 
-### Step 9: Stub the workflow integration layer (Phase 5)
+### Step 9: Build the (deliberately simple) workflow integration layer (Phase 5)
 
 **Actions:**
-- Create `apps/titan_lifemap/routing.py` with clean interface functions: `route_to_crm(profile)`, `send_email_notification(profile, recipient_type)`, `route_to_adviser(profile)`, `route_to_coaching(profile)` — each currently logging the action and writing to a local "pending integrations" table rather than calling a real external system, since the CRM/email tool choice is an open question.
-- Document in code comments and in `reference/titan-lifemap-data-access.md` exactly what each stub needs once Patrick picks his tools (API endpoint, auth method, payload shape).
+- Create `apps/titan_lifemap/routing.py` implementing the confirmed Phase 1 stack — no CRM:
+  - `store_lead(profile)` — writes the completed profile/lead into a `titan_leads` table in `data/data.db`.
+  - `send_report_email(profile, report_pdf_path)` — sends the generated report to the user's email via Google Workspace (SMTP or Gmail API — use SMTP with an app password initially for simplicity, matching the "don't over-engineer" instruction).
+  - `notify_make_webhook(profile, event_type)` — fires a webhook to Make.com so Patrick can build his own downstream automations (e.g. notify him by Telegram via the existing CommandOS bot, or anything else) without that logic living in this codebase.
+  - `route_to_adviser(profile)` / `route_to_coaching(profile)` — for now, both simply call `notify_make_webhook` with a distinct event type; real adviser/coaching system integration is deferred until Phase 1 demand is proven, per Patrick's explicit instruction not to add CRM complexity yet.
+- Document the Make.com webhook payload shape in `reference/titan-lifemap-data-access.md` so Patrick can build the Make.com scenario independently.
 
 **Files affected:**
 - `apps/titan_lifemap/routing.py` (new)
