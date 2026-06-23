@@ -21,6 +21,11 @@
 |------|----------|------------|-------|
 | targeted.support | 0 | 0 | 2026-06-22 |
 
+**Last 30 days:**
+| Site | Total Visitors | Total Page Views | Period |
+|------|-----------------|-------------------|--------|
+| targeted.support | 4 | 8 | 2026-05-24 to 2026-06-22 |
+
 ## Recent Meetings (last 14 days)
 _No meetings recorded in the last 14 days._
 

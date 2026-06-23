@@ -27,7 +27,12 @@ API_URL_TEMPLATE = "https://simpleanalytics.com/{hostname}.json"
 
 
 def collect():
-    """Fetch yesterday's stats for every connected Simple Analytics site."""
+    """Fetch the full available history (~30 days) for every connected Simple Analytics site.
+
+    Each run re-fetches and upserts the whole window, so historical days stay
+    correct (e.g. if Simple Analytics back-fills bot-filtered traffic) and a
+    missed collection day doesn't leave a permanent gap.
+    """
     sites = get_env_prefixed("SIMPLE_ANALYTICS_SITE_")
     if not sites:
         return {
@@ -50,14 +55,10 @@ def collect():
                         "reason": f"{hostname}: API returned ok=false"}
 
             histogram = data.get("histogram", [])
-            yesterday = histogram[-2] if len(histogram) >= 2 else (histogram[-1] if histogram else None)
+            # Drop the final entry - it's the current (incomplete) day
+            history = histogram[:-1] if len(histogram) > 1 else histogram
 
-            results[site_name] = {
-                "hostname": hostname,
-                "date": yesterday["date"] if yesterday else None,
-                "visitors": yesterday["visitors"] if yesterday else 0,
-                "pageviews": yesterday["pageviews"] if yesterday else 0,
-            }
+            results[site_name] = {"hostname": hostname, "history": history}
     except Exception as e:
         return {"source": "simple_analytics", "status": "error", "reason": str(e)}
 
@@ -65,7 +66,7 @@ def collect():
 
 
 def write(conn, result, date):
-    """Write Simple Analytics daily snapshots to database. Returns records written."""
+    """Write Simple Analytics daily history to database. Returns records written."""
     conn.execute("""
         CREATE TABLE IF NOT EXISTS simple_analytics_daily (
             date TEXT NOT NULL,
@@ -85,15 +86,15 @@ def write(conn, result, date):
     collected_at = datetime.now(timezone.utc).isoformat()
     records = 0
     for site_name, stats in result["data"].items():
-        record_date = stats["date"] or date
-        conn.execute(
-            "INSERT OR REPLACE INTO simple_analytics_daily "
-            "(date, site, hostname, visitors, pageviews, collected_at) "
-            "VALUES (?, ?, ?, ?, ?, ?)",
-            (record_date, site_name, stats["hostname"], stats["visitors"],
-             stats["pageviews"], collected_at)
-        )
-        records += 1
+        for day in stats["history"]:
+            conn.execute(
+                "INSERT OR REPLACE INTO simple_analytics_daily "
+                "(date, site, hostname, visitors, pageviews, collected_at) "
+                "VALUES (?, ?, ?, ?, ?, ?)",
+                (day["date"], site_name, stats["hostname"], day["visitors"],
+                 day["pageviews"], collected_at)
+            )
+            records += 1
 
     conn.commit()
     return records
@@ -103,7 +104,8 @@ if __name__ == "__main__":
     result = collect()
     if result["status"] == "success":
         for site, stats in result["data"].items():
-            print(f"{site} ({stats['hostname']}): {stats['visitors']} visitors, "
-                  f"{stats['pageviews']} pageviews on {stats['date']}")
+            print(f"{site} ({stats['hostname']}): {len(stats['history'])} days of history")
+            for day in stats["history"][-7:]:
+                print(f"  {day['date']}: {day['visitors']} visitors, {day['pageviews']} pageviews")
     else:
         print(f"{result['status']}: {result.get('reason', '')}")

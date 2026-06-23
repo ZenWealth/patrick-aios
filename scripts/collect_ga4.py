@@ -13,7 +13,7 @@ Tables created: ga4_daily
 """
 
 import sys
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
@@ -33,7 +33,12 @@ METRICS = ["sessions", "totalUsers", "newUsers", "screenPageViews", "bounceRate"
 
 
 def collect():
-    """Fetch yesterday's traffic for every connected GA4 property."""
+    """Fetch yesterday's traffic for every connected GA4 property.
+
+    Note: a date-dimensioned multi-day query was tried for instant history
+    backfill, but this GA4 property's regional data-residency settings reject
+    that request shape (FAILED_PRECONDITION). Single-day, no-dimension
+    queries work reliably, so history builds up naturally via daily runs."""
     creds_path = get_google_credentials_path()
     if not creds_path:
         return {
@@ -61,9 +66,11 @@ def collect():
                 date_ranges=[DateRange(start_date="yesterday", end_date="yesterday")],
                 metrics=[Metric(name=m) for m in METRICS],
             ))
+            yesterday = (datetime.now(timezone.utc).date() - timedelta(days=1)).isoformat()
             if resp.rows:
                 values = resp.rows[0].metric_values
-                sites[site_name] = {
+                day = {
+                    "date": yesterday,
                     "sessions": int(float(values[0].value)),
                     "users": int(float(values[1].value)),
                     "new_users": int(float(values[2].value)),
@@ -71,10 +78,9 @@ def collect():
                     "bounce_rate": float(values[4].value) * 100,
                 }
             else:
-                sites[site_name] = {
-                    "sessions": 0, "users": 0, "new_users": 0,
-                    "page_views": 0, "bounce_rate": 0.0,
-                }
+                day = {"date": yesterday, "sessions": 0, "users": 0, "new_users": 0,
+                       "page_views": 0, "bounce_rate": 0.0}
+            sites[site_name] = [day]
 
         return {"source": "ga4", "status": "success", "data": sites}
     except Exception as e:
@@ -104,15 +110,16 @@ def write(conn, result, date):
     collected_at = datetime.now(timezone.utc).isoformat()
     records = 0
 
-    for site_name, metrics in result["data"].items():
-        conn.execute(
-            "INSERT OR REPLACE INTO ga4_daily "
-            "(date, site, sessions, users, new_users, page_views, bounce_rate, collected_at) "
-            "VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
-            (date, site_name, metrics["sessions"], metrics["users"], metrics["new_users"],
-             metrics["page_views"], metrics["bounce_rate"], collected_at)
-        )
-        records += 1
+    for site_name, history in result["data"].items():
+        for day in history:
+            conn.execute(
+                "INSERT OR REPLACE INTO ga4_daily "
+                "(date, site, sessions, users, new_users, page_views, bounce_rate, collected_at) "
+                "VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+                (day["date"], site_name, day["sessions"], day["users"], day["new_users"],
+                 day["page_views"], day["bounce_rate"], collected_at)
+            )
+            records += 1
 
     conn.commit()
     return records
@@ -121,8 +128,10 @@ def write(conn, result, date):
 if __name__ == "__main__":
     result = collect()
     if result["status"] == "success":
-        for site, metrics in result["data"].items():
-            print(f"{site}: {metrics['sessions']} sessions, {metrics['users']} users, "
-                  f"{metrics['page_views']} page views")
+        for site, history in result["data"].items():
+            print(f"{site}: {len(history)} days of history")
+            for day in history[-7:]:
+                print(f"  {day['date']}: {day['sessions']} sessions, {day['users']} users, "
+                      f"{day['page_views']} page views")
     else:
         print(f"{result['status']}: {result.get('reason', '')}")

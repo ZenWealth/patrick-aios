@@ -132,6 +132,23 @@ def section_simple_analytics(conn):
                 f"| {r['hostname']} | {fmt_number(r['visitors'])} | "
                 f"{fmt_number(r['pageviews'])} | {r['date']} |"
             )
+        lines.append("")
+
+        trend = query_all(conn, """
+            SELECT hostname, SUM(visitors) AS total_visitors, SUM(pageviews) AS total_pageviews,
+                   MIN(date) AS from_date, MAX(date) AS to_date
+            FROM simple_analytics_daily
+            GROUP BY hostname
+        """)
+        if trend:
+            lines.append("**Last 30 days:**")
+            lines.append("| Site | Total Visitors | Total Page Views | Period |")
+            lines.append("|------|-----------------|-------------------|--------|")
+            for r in trend:
+                lines.append(
+                    f"| {r['hostname']} | {fmt_number(r['total_visitors'])} | "
+                    f"{fmt_number(r['total_pageviews'])} | {r['from_date']} to {r['to_date']} |"
+                )
     lines.append("")
     return lines
 
