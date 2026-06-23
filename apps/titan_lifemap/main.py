@@ -23,6 +23,7 @@ from pydantic import BaseModel
 from apps.titan_lifemap.config_loader import validate_all
 from apps.titan_lifemap.db import get_connection, create_session, get_session
 from apps.titan_lifemap import conversation
+from apps.titan_lifemap import routing
 
 logger = logging.getLogger(__name__)
 
@@ -77,6 +78,16 @@ class SessionStatus(BaseModel):
     completed: bool
     has_contact: bool
     route: str | None
+
+
+class CompletionResult(BaseModel):
+    session_id: str
+    analysis: bool
+    route: str | None
+    report_generated: bool
+    email_sent: bool
+    webhook_fired: bool
+    clarity_score: float | None = None
 
 
 # --- Endpoints ---
@@ -140,6 +151,28 @@ async def session_status(session_id: str):
         has_contact=bool(session.get("email")),
         route=session.get("route"),
     )
+
+
+@app.post("/session/{session_id}/complete", response_model=CompletionResult)
+async def complete_session(session_id: str):
+    """Trigger the post-session workflow: analyse, generate report, email, webhook.
+
+    Called when the conversation engine signals session_complete=True.
+    The Internal AI Profile is generated here (stored internally, never returned).
+    """
+    conn = get_connection()
+    try:
+        session = get_session(conn, session_id)
+    finally:
+        conn.close()
+
+    if not session:
+        raise HTTPException(status_code=404, detail="Session not found")
+    if not session["completed"]:
+        raise HTTPException(status_code=400, detail="Session is not yet complete")
+
+    result = routing.run_completion_workflow(session_id)
+    return CompletionResult(**result)
 
 
 @app.get("/health")
