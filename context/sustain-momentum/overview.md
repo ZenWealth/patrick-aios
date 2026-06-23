@@ -25,6 +25,8 @@ Services include:
 
 Explicitly not FCA-regulated financial advice. No product sales. Behavioural and educational in nature. Rooted in Patrick's belief that people's real obstacle is emotional and behavioural, not informational.
 
+**Evolution in progress:** the Clarity Check is being rebuilt as **Titan LifeMap™** — a structured, AI-guided discovery conversation under Patrick's trademarked Titan Mindset framework (see `context/titan-lifemap/overview.md`). Same underlying purpose (identify what matters, what's blocking progress), but delivered as a proper multi-stage engine with scoring, reporting, and three handoff routes (self-guided, Sustain Momentum coaching, IFA referral) rather than a single diagnostic session.
+
 ### B2B: Targeted Support & AGBR Specialist Consulting
 
 Website: targeted.support (dedicated platform — see below)

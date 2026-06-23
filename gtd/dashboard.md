@@ -1,6 +1,6 @@
 # GTD Dashboard
 
-> **Projects:** 2 active | **Next Actions:** 4 defined | **Waiting For:** 0 items
+> **Projects:** 3 active | **Next Actions:** 4 defined | **Waiting For:** 0 items
 > **Last Review:** — | **Next Review:** 2026-06-27 (Saturday)
 
 ---
@@ -17,6 +17,7 @@ _(Nothing flagged right now)_
 
 
 
+
 ### GOIA Technologies
 - [ ] Document and share the GOIA AIOS workspace
 
@@ -24,6 +25,7 @@ _(Nothing flagged right now)_
 - [ ] Develop D2C financial guidance process
 
 ### GAIA
+- [ ] Build Titan LifeMap v1 (Behavioural Discovery Engine)
 
 ### NED / Board Advisory
 
@@ -38,6 +40,7 @@ _(Nothing completed yet — your first win is coming!)_
 ---
 
 ## Waiting For (Active)
+
 
 
 
