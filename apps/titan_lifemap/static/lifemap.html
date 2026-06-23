@@ -1,0 +1,669 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Titan LifeMap — Sustain Momentum</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="stylesheet" media="print" onload="this.media='all'" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600&family=Lato:wght@300;400;700&display=swap" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --navy:   #283566;
+      --gold:   #BFA046;
+      --white:  #FFFFFF;
+      --grey:   #F5F5F5;
+      --charcoal: #2C2C2C;
+      --gold-light: #d4b865;
+      --navy-light: #3a4d8c;
+      --transition: 0.5s ease;
+    }
+
+    html, body {
+      height: 100%;
+      font-family: 'Lato', sans-serif;
+      background: var(--grey);
+      color: var(--charcoal);
+    }
+
+    /* ─── SCREENS ─── */
+    .screen {
+      display: none;
+      min-height: 100vh;
+      animation: fadeIn 0.6s ease;
+    }
+    .screen.active { display: flex; }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(12px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ─── INTRO SCREEN ─── */
+    #screen-intro {
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: var(--navy);
+      padding: 48px 24px;
+      text-align: center;
+    }
+
+    .logo-mark {
+      width: 56px;
+      height: 56px;
+      border: 2px solid var(--gold);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 32px;
+    }
+    .logo-mark svg { width: 28px; height: 28px; fill: var(--gold); }
+
+    #screen-intro h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2rem, 5vw, 3rem);
+      font-weight: 500;
+      color: var(--white);
+      line-height: 1.2;
+      margin-bottom: 16px;
+    }
+
+    #screen-intro .subtitle {
+      font-size: 1.1rem;
+      font-weight: 300;
+      color: rgba(255,255,255,0.75);
+      max-width: 480px;
+      line-height: 1.7;
+      margin-bottom: 48px;
+    }
+
+    .journey-steps {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 48px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+    .journey-step {
+      font-size: 0.75rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.5);
+      padding: 6px 14px;
+      border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 20px;
+    }
+    .journey-step.highlight {
+      color: var(--gold);
+      border-color: var(--gold);
+    }
+
+    .btn-primary {
+      display: inline-block;
+      background: var(--gold);
+      color: var(--navy);
+      font-family: 'Lato', sans-serif;
+      font-size: 0.95rem;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      padding: 18px 48px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: background var(--transition), transform 0.2s;
+    }
+    .btn-primary:hover {
+      background: var(--gold-light);
+      transform: translateY(-1px);
+    }
+    .btn-primary:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .intro-note {
+      margin-top: 32px;
+      font-size: 0.8rem;
+      color: rgba(255,255,255,0.35);
+    }
+
+    /* ─── DISCOVERY SCREEN ─── */
+    #screen-discovery {
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    /* Progress bar */
+    .progress-bar {
+      background: var(--navy);
+      padding: 20px 32px;
+      display: flex;
+      align-items: center;
+      gap: 0;
+    }
+
+    .stage-step {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      position: relative;
+      cursor: default;
+    }
+
+    .stage-step::after {
+      content: '';
+      position: absolute;
+      top: 14px;
+      left: 50%;
+      width: 100%;
+      height: 1px;
+      background: rgba(255,255,255,0.15);
+    }
+    .stage-step:last-child::after { display: none; }
+
+    .stage-dot {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      border: 2px solid rgba(255,255,255,0.2);
+      background: transparent;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      z-index: 1;
+      transition: all 0.4s;
+    }
+    .stage-step.done .stage-dot {
+      background: var(--gold);
+      border-color: var(--gold);
+    }
+    .stage-step.done .stage-dot::after {
+      content: '✓';
+      color: var(--navy);
+      font-size: 12px;
+      font-weight: 700;
+    }
+    .stage-step.active .stage-dot {
+      border-color: var(--gold);
+      background: rgba(191,160,70,0.15);
+    }
+    .stage-step.active .stage-dot::after {
+      content: '';
+      width: 8px;
+      height: 8px;
+      background: var(--gold);
+      border-radius: 50%;
+    }
+
+    .stage-label {
+      margin-top: 6px;
+      font-size: 0.65rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.3);
+      transition: color 0.4s;
+    }
+    .stage-step.active .stage-label { color: var(--gold); }
+    .stage-step.done .stage-label { color: rgba(255,255,255,0.5); }
+
+    /* Titan badge */
+    .titan-badge {
+      background: var(--white);
+      padding: 40px 32px 32px;
+      border-bottom: 1px solid rgba(0,0,0,0.06);
+      text-align: center;
+    }
+    .titan-name {
+      font-size: 0.7rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 8px;
+      font-weight: 700;
+    }
+    .titan-heading {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(1.4rem, 3vw, 1.8rem);
+      color: var(--navy);
+      font-weight: 500;
+    }
+
+    /* Conversation area */
+    .conversation {
+      flex: 1;
+      padding: 40px 24px;
+      max-width: 720px;
+      width: 100%;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+
+    /* Guide message — the prominent question */
+    .guide-message {
+      background: var(--white);
+      border-left: 3px solid var(--gold);
+      border-radius: 0 8px 8px 0;
+      padding: 28px 32px;
+      margin-bottom: 32px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.05);
+      animation: slideIn 0.5s ease;
+    }
+
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateX(-8px); }
+      to   { opacity: 1; transform: translateX(0); }
+    }
+
+    .guide-message p {
+      font-size: 1.15rem;
+      line-height: 1.8;
+      color: var(--charcoal);
+      font-weight: 300;
+    }
+
+    /* Thinking indicator */
+    .thinking {
+      display: none;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 0 24px;
+      color: rgba(44,44,44,0.4);
+      font-size: 0.85rem;
+      font-style: italic;
+    }
+    .thinking.visible { display: flex; }
+    .thinking-dots span {
+      display: inline-block;
+      width: 6px; height: 6px;
+      background: var(--gold);
+      border-radius: 50%;
+      animation: bounce 1.2s infinite;
+      margin: 0 2px;
+    }
+    .thinking-dots span:nth-child(2) { animation-delay: 0.2s; }
+    .thinking-dots span:nth-child(3) { animation-delay: 0.4s; }
+    @keyframes bounce {
+      0%, 80%, 100% { transform: translateY(0); opacity: 0.4; }
+      40% { transform: translateY(-6px); opacity: 1; }
+    }
+
+    /* Response area */
+    .response-area {
+      background: var(--white);
+      border-radius: 8px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.05);
+      overflow: hidden;
+      transition: box-shadow 0.2s;
+    }
+    .response-area:focus-within {
+      box-shadow: 0 4px 20px rgba(40,53,102,0.12);
+    }
+
+    .response-label {
+      padding: 16px 20px 0;
+      font-size: 0.7rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: rgba(44,44,44,0.35);
+      font-weight: 700;
+    }
+
+    #response-input {
+      width: 100%;
+      min-height: 140px;
+      padding: 12px 20px 16px;
+      border: none;
+      outline: none;
+      font-family: 'Lato', sans-serif;
+      font-size: 1rem;
+      line-height: 1.7;
+      color: var(--charcoal);
+      resize: vertical;
+      background: transparent;
+    }
+    #response-input::placeholder { color: rgba(44,44,44,0.3); }
+
+    .response-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 20px;
+      border-top: 1px solid var(--grey);
+    }
+    .response-hint {
+      font-size: 0.8rem;
+      color: rgba(44,44,44,0.35);
+    }
+
+    .btn-continue {
+      background: var(--navy);
+      color: var(--white);
+      font-family: 'Lato', sans-serif;
+      font-size: 0.85rem;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      padding: 12px 28px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.2s;
+    }
+    .btn-continue:hover { background: var(--navy-light); transform: translateY(-1px); }
+    .btn-continue:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
+
+    /* ─── COMPLETE SCREEN ─── */
+    #screen-complete {
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: var(--navy);
+      padding: 48px 24px;
+      text-align: center;
+    }
+
+    .complete-icon {
+      width: 72px;
+      height: 72px;
+      border: 2px solid var(--gold);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 32px;
+    }
+    .complete-icon svg { width: 32px; height: 32px; fill: none; stroke: var(--gold); stroke-width: 2; }
+
+    #screen-complete h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(1.8rem, 4vw, 2.5rem);
+      color: var(--white);
+      font-weight: 500;
+      margin-bottom: 16px;
+    }
+    #screen-complete p {
+      color: rgba(255,255,255,0.65);
+      font-size: 1.05rem;
+      line-height: 1.8;
+      max-width: 480px;
+      font-weight: 300;
+      margin-bottom: 12px;
+    }
+    .complete-email-note {
+      margin-top: 32px;
+      font-size: 0.85rem;
+      color: var(--gold);
+      font-style: italic;
+    }
+
+    /* ─── ERROR SCREEN ─── */
+    #screen-error {
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 48px 24px;
+      text-align: center;
+    }
+    #screen-error h2 {
+      font-family: 'Playfair Display', serif;
+      color: var(--navy);
+      margin-bottom: 12px;
+    }
+    #screen-error p { color: rgba(44,44,44,0.6); margin-bottom: 24px; }
+
+    /* ─── RESPONSIVE ─── */
+    @media (max-width: 600px) {
+      .stage-label { display: none; }
+      .guide-message { padding: 20px; }
+      .guide-message p { font-size: 1rem; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ═══ INTRO ═══ -->
+<div id="screen-intro" class="screen active">
+  <div class="logo-mark">
+    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+      <path d="M12 2L3 7v10l9 5 9-5V7L12 2z"/>
+    </svg>
+  </div>
+
+  <h1>Your Titan LifeMap</h1>
+  <p class="subtitle">A guided discovery journey that helps you understand what you truly want from life — before we talk about money.</p>
+
+  <div class="journey-steps">
+    <span class="journey-step highlight">Visionary</span>
+    <span class="journey-step">Sage</span>
+    <span class="journey-step">Builder</span>
+    <span class="journey-step">Steward</span>
+    <span class="journey-step">Guardian</span>
+  </div>
+
+  <button class="btn-primary" id="btn-begin">Begin Your Discovery</button>
+  <p class="intro-note">Takes around 20–30 minutes &nbsp;·&nbsp; No financial data required to start</p>
+</div>
+
+<!-- ═══ DISCOVERY ═══ -->
+<div id="screen-discovery" class="screen">
+
+  <!-- Progress -->
+  <nav class="progress-bar" id="progress-bar">
+    <div class="stage-step active" data-stage="visionary">
+      <div class="stage-dot"></div>
+      <span class="stage-label">Visionary</span>
+    </div>
+    <div class="stage-step" data-stage="sage">
+      <div class="stage-dot"></div>
+      <span class="stage-label">Sage</span>
+    </div>
+    <div class="stage-step" data-stage="builder">
+      <div class="stage-dot"></div>
+      <span class="stage-label">Builder</span>
+    </div>
+    <div class="stage-step" data-stage="steward">
+      <div class="stage-dot"></div>
+      <span class="stage-label">Steward</span>
+    </div>
+    <div class="stage-step" data-stage="guardian">
+      <div class="stage-dot"></div>
+      <span class="stage-label">Guardian</span>
+    </div>
+  </nav>
+
+  <!-- Titan badge -->
+  <div class="titan-badge">
+    <div class="titan-name" id="titan-name">The Visionary</div>
+    <div class="titan-heading" id="titan-heading">Life Vision &amp; What Enough Means</div>
+  </div>
+
+  <!-- Conversation -->
+  <div class="conversation">
+    <div class="guide-message" id="guide-message">
+      <p id="guide-text">Loading your discovery session&hellip;</p>
+    </div>
+
+    <div class="thinking" id="thinking">
+      <div class="thinking-dots">
+        <span></span><span></span><span></span>
+      </div>
+      Taking a moment to reflect&hellip;
+    </div>
+
+    <div class="response-area" id="response-area">
+      <div class="response-label">Your reflection</div>
+      <textarea id="response-input" placeholder="Take your time. There are no right or wrong answers here."></textarea>
+      <div class="response-footer">
+        <span class="response-hint">Press Shift+Enter for a new line</span>
+        <button class="btn-continue" id="btn-continue">Continue →</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ COMPLETE ═══ -->
+<div id="screen-complete" class="screen">
+  <div class="complete-icon">
+    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+      <polyline points="20 6 9 17 4 12"/>
+    </svg>
+  </div>
+  <h2>Your Titan LifeMap is complete.</h2>
+  <p>Thank you for taking the time to reflect. You've just done something most people never do — you've looked honestly at what you truly want from your life.</p>
+  <p>We're preparing your personal report now.</p>
+  <p class="complete-email-note" id="complete-email-note"></p>
+</div>
+
+<!-- ═══ ERROR ═══ -->
+<div id="screen-error" class="screen">
+  <h2>Something went wrong</h2>
+  <p id="error-message">We weren't able to connect to the discovery engine. Please try again.</p>
+  <button class="btn-primary" onclick="location.reload()">Try Again</button>
+</div>
+
+<script>
+  // ─── CONFIG ───────────────────────────────────────────────────
+  const API_BASE = 'https://api.sustain-momentum.com';
+
+  // Stage metadata for the progress bar and titan badge
+  const STAGES = {
+    visionary: { titan: 'The Visionary', heading: 'Life Vision &amp; What Enough Means' },
+    sage:      { titan: 'The Sage',      heading: 'Legacy &amp; What Truly Matters' },
+    builder:   { titan: 'The Builder',   heading: 'Values &amp; Family' },
+    steward:   { titan: 'The Steward',   heading: 'Your Relationship with Money' },
+    guardian:  { titan: 'The Guardian',  heading: 'Patterns &amp; Protection' },
+  };
+  const STAGE_ORDER = ['visionary','sage','builder','steward','guardian'];
+
+  // ─── STATE ────────────────────────────────────────────────────
+  let sessionId = null;
+  let currentStage = 'visionary';
+  let isWaiting = false;
+
+  // ─── SCREENS ──────────────────────────────────────────────────
+  function showScreen(id) {
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    document.getElementById('screen-' + id).classList.add('active');
+  }
+
+  // ─── PROGRESS BAR ─────────────────────────────────────────────
+  function updateProgress(stage) {
+    currentStage = stage;
+    const idx = STAGE_ORDER.indexOf(stage);
+    document.querySelectorAll('.stage-step').forEach((el, i) => {
+      el.classList.remove('active','done');
+      if (i < idx) el.classList.add('done');
+      else if (i === idx) el.classList.add('active');
+    });
+    const meta = STAGES[stage] || {};
+    document.getElementById('titan-name').innerHTML = meta.titan || '';
+    document.getElementById('titan-heading').innerHTML = meta.heading || '';
+  }
+
+  // ─── DISPLAY GUIDE MESSAGE ────────────────────────────────────
+  function setGuideMessage(text) {
+    const el = document.getElementById('guide-text');
+    // Animate the new message in
+    el.style.opacity = '0';
+    setTimeout(() => {
+      el.textContent = text;
+      el.style.transition = 'opacity 0.4s';
+      el.style.opacity = '1';
+    }, 200);
+  }
+
+  // ─── THINKING INDICATOR ───────────────────────────────────────
+  function setWaiting(waiting) {
+    isWaiting = waiting;
+    document.getElementById('thinking').classList.toggle('visible', waiting);
+    document.getElementById('response-area').style.opacity = waiting ? '0.4' : '1';
+    document.getElementById('btn-continue').disabled = waiting;
+    document.getElementById('response-input').disabled = waiting;
+  }
+
+  // ─── START SESSION ────────────────────────────────────────────
+  async function startSession() {
+    document.getElementById('btn-begin').disabled = true;
+    try {
+      const res = await fetch(API_BASE + '/session/start', { method: 'POST' });
+      if (!res.ok) throw new Error('API error ' + res.status);
+      const data = await res.json();
+      sessionId = data.session_id;
+      showScreen('discovery');
+      updateProgress(data.stage || 'visionary');
+      setGuideMessage(data.message);
+      document.getElementById('response-input').focus();
+    } catch (e) {
+      document.getElementById('error-message').textContent = 'Could not start your session. Please try again in a moment.';
+      showScreen('error');
+    }
+  }
+
+  // ─── SEND MESSAGE ─────────────────────────────────────────────
+  async function sendMessage() {
+    const input = document.getElementById('response-input');
+    const message = input.value.trim();
+    if (!message || isWaiting) return;
+
+    input.value = '';
+    setWaiting(true);
+
+    try {
+      const res = await fetch(API_BASE + '/session/' + sessionId + '/message', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ message }),
+      });
+      if (!res.ok) throw new Error('API error ' + res.status);
+      const data = await res.json();
+
+      setWaiting(false);
+
+      if (data.session_complete) {
+        // Show completion screen
+        const emailNote = document.getElementById('complete-email-note');
+        emailNote.textContent = data.has_contact
+          ? 'Your report will arrive in your inbox shortly.'
+          : '';
+        showScreen('complete');
+        return;
+      }
+
+      // Update stage if it changed
+      if (data.stage && data.stage !== currentStage) {
+        updateProgress(data.stage);
+      }
+
+      setGuideMessage(data.message);
+      input.focus();
+
+    } catch (e) {
+      setWaiting(false);
+      document.getElementById('error-message').textContent = 'Something went wrong sending your response. Your progress has been saved — please refresh to continue.';
+      showScreen('error');
+    }
+  }
+
+  // ─── EVENT LISTENERS ──────────────────────────────────────────
+  document.getElementById('btn-begin').addEventListener('click', startSession);
+  document.getElementById('btn-continue').addEventListener('click', sendMessage);
+
+  document.getElementById('response-input').addEventListener('keydown', function(e) {
+    // Enter (without Shift) submits
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      sendMessage();
+    }
+  });
+</script>
+</body>
+</html>
