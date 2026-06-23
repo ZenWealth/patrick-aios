@@ -27,6 +27,7 @@ Claude can run SQL directly in sessions using this pattern — no need to go thr
 | FX Rates (Frankfurter API) | `fx_rates` | `scripts/collect_fx_rates.py` | Daily exchange rates, GBP base, vs AUD/CAD/EUR/USD |
 | Google Analytics (GA4) | `ga4_daily` | `scripts/collect_ga4.py` | Daily website traffic per site — sessions, users, page views, bounce rate |
 | Fireflies.ai | `meetings` | `scripts/collect_fireflies.py` | Meeting transcripts, summaries, action items — classified by venture (GOIA/SUSTAIN_MOMENTUM/GAIA/NED/GENERAL) via keyword matching |
+| Simple Analytics | `simple_analytics_daily` | `scripts/collect_simple_analytics.py` | Daily visitors/pageviews for targeted.support, via the free public stats endpoint (no API key, no paid plan needed — site must have visibility set to "public") |
 
 **Not yet connected:** GOIA (goiatechnologies.com) and Targeted Support (targeted.support) don't have GA4 installed yet. Once they do, add `GA4_PROPERTY_ID_GOIA` and `GA4_PROPERTY_ID_TARGETED_SUPPORT` to `.env` — the collector auto-discovers any `GA4_PROPERTY_ID_*` entry, no code changes needed.
 
@@ -58,6 +59,18 @@ Primary key: (date, currency)
 | collected_at | TEXT | UTC timestamp of collection |
 
 Primary key: (date, site)
+
+### simple_analytics_daily
+| Column | Type | Description |
+|---|---|---|
+| date | TEXT | Snapshot date (YYYY-MM-DD) |
+| site | TEXT | Site label, e.g. TARGETED_SUPPORT |
+| hostname | TEXT | Actual hostname, e.g. targeted.support |
+| visitors | INTEGER | Unique visitors that day |
+| pageviews | INTEGER | Total page views that day |
+| collected_at | TEXT | UTC timestamp of collection |
+
+Primary key: (date, site). Add more sites via `SIMPLE_ANALYTICS_SITE_<NAME>=<hostname>` in `.env` — the site's stats must be set to "public" in Simple Analytics settings (Settings -> Visibility) for the free endpoint to work; no paid plan or API key needed.
 
 ### meetings
 | Column | Type | Description |

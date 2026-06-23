@@ -114,6 +114,28 @@ def section_ga4(conn):
     return lines
 
 
+def section_simple_analytics(conn):
+    """Website traffic from Simple Analytics (free public endpoint)."""
+    if not table_exists(conn, "simple_analytics_daily"):
+        return []
+    lines = ["## Website Traffic (Simple Analytics)"]
+    rows = query_all(conn, """
+        SELECT * FROM simple_analytics_daily
+        WHERE date = (SELECT MAX(date) FROM simple_analytics_daily)
+        ORDER BY site
+    """)
+    if rows:
+        lines.append("| Site | Visitors | Page Views | As Of |")
+        lines.append("|------|----------|------------|-------|")
+        for r in rows:
+            lines.append(
+                f"| {r['hostname']} | {fmt_number(r['visitors'])} | "
+                f"{fmt_number(r['pageviews'])} | {r['date']} |"
+            )
+    lines.append("")
+    return lines
+
+
 def section_meetings(conn):
     """Recent meetings from Fireflies, classified by venture."""
     if not table_exists(conn, "meetings"):
@@ -144,6 +166,7 @@ def section_meetings(conn):
 SECTIONS = [
     section_fx_rates,
     section_ga4,
+    section_simple_analytics,
     section_meetings,
 ]
 
