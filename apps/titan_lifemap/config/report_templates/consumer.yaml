@@ -1,0 +1,71 @@
+# Titan LifeMap - Consumer Report Template
+#
+# The report a client receives after completing their discovery session.
+# Warm, personal, empowering. Never contains hard financial data in raw form.
+# Built out fully in Step 8 of the implementation plan.
+
+report_title: "Your Titan LifeMap"
+subtitle: "A personal clarity report from Sustain Momentum"
+
+sections:
+  - id: welcome
+    title: "Your Discovery Session"
+    instruction: |
+      A short personal welcome. Acknowledge that they've just shared something significant.
+      One or two sentences - set the tone without being grandiose.
+
+  - id: future_vision
+    title: "Where You're Heading"
+    source_field: future_vision_statement
+    instruction: |
+      Reflect their Future Vision Statement back to them in a way that makes it concrete
+      and real. Help them see what they articulated. 2-3 paragraphs.
+
+  - id: personal_enough
+    title: "What Enough Looks Like"
+    source_field: personal_enough_statement
+    instruction: |
+      Describe their Personal Enough Statement - the feeling they described, not a number.
+      This is often one of the most powerful sections. 1-2 paragraphs.
+
+  - id: values
+    title: "What Matters Most to You"
+    source_field: top_five_values
+    instruction: |
+      Present their Top Five Values and briefly connect each to what they shared
+      during the session. Not a list dump - weave it into a narrative.
+
+  - id: legacy
+    title: "The Legacy You're Building"
+    source_field: legacy_statement
+    instruction: |
+      Bring their Legacy Statement to life. Connect it to their values and vision.
+      1-2 paragraphs.
+
+  - id: hwh_scorecard
+    title: "Health, Wealth and Happiness"
+    source_field: health_wealth_happiness_scorecard
+    instruction: |
+      Present their Health-Wealth-Happiness Scorecard in a constructive way.
+      Where are they strong? Where is the biggest opportunity? Be honest but kind.
+
+  - id: clarity_score
+    title: "Your Titan Clarity Score"
+    instruction: |
+      Present the Clarity Score as a starting point, not a verdict. Explain briefly
+      what it measures and what the score tells them specifically. Encourage rather
+      than grade. Include the score prominently.
+
+  - id: momentum_plan
+    title: "Your Titan Momentum Plan"
+    source_field: momentum_plan
+    instruction: |
+      Present the Momentum Plan actions as concrete next steps. Each should feel
+      specific to them, not generic. Number them 1-5.
+
+  - id: next_steps
+    title: "What Happens Next"
+    instruction: |
+      Brief explanation of the three routes: consumer self-service, coaching,
+      adviser introduction. Let them know these are options, not pressure.
+      Keep this warm and low-pressure.

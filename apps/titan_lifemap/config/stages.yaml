@@ -1,0 +1,107 @@
+# Titan LifeMap - Discovery Stages
+#
+# Five stages, in order. Each stage has original content written fresh for
+# this project - see context/titan-lifemap/ip-boundary.md before editing.
+#
+# Schema per stage:
+#   name:        internal identifier (lowercase, used in code/db)
+#   titan:       which of the Seven Titans this stage embodies
+#   display_name: human-readable name shown in any future UI
+#   framing:     the intro Claude reads to the user when entering this stage
+#   questions:   list of original open questions (Claude may ask follow-ups
+#                beyond these - see prompts/conversation.yaml for that logic)
+#   soft_fact_outputs: which SoftFacts model fields this stage populates
+#   output_name: the named artifact(s) this stage produces (for display)
+#   requests_contact: whether this stage is where first name + email get asked
+#   captures_hard_facts: whether this stage starts collecting financial data
+
+stages:
+  - name: visionary
+    titan: "The Visionary"
+    display_name: "Visionary"
+    framing: >
+      Let's start with where you're heading, not what you have. There are no
+      wrong answers here - just think out loud with me.
+    questions:
+      - "If your life in five years felt exactly right, what would be different from today?"
+      - "What does a successful life actually look like for you - not what you think it should look like, what it really looks like?"
+      - "If money stopped being a worry tomorrow, what would you spend your time doing?"
+      - "What would 'enough' feel like? Not a number yet - just the feeling."
+    soft_fact_outputs:
+      - future_vision_statement
+      - personal_enough_statement
+    output_name: "Future Vision Statement, Personal Enough Statement"
+    requests_contact: false
+    captures_hard_facts: false
+
+  - name: sage
+    titan: "The Sage"
+    display_name: "Sage"
+    framing: >
+      Now let's step back and think about meaning - what actually matters
+      most, beyond the day-to-day.
+    questions:
+      - "Looking back from later in life, what would you most regret not having done?"
+      - "What do you want people to remember about how you lived, not just what you achieved?"
+      - "On a normal week, how satisfied are you with your health, your finances, and your overall happiness - and where's the biggest gap between them?"
+      - "What does a meaningful life look like to you, separate from a successful one?"
+    soft_fact_outputs:
+      - legacy_statement
+      - health_wealth_happiness_scorecard
+    output_name: "Legacy Statement, Health-Wealth-Happiness Scorecard"
+    requests_contact: false
+    captures_hard_facts: false
+
+  - name: builder
+    titan: "The Builder"
+    display_name: "Builder"
+    framing: >
+      Let's talk about what matters most to you, and who's part of that picture.
+    questions:
+      - "From this list, which five matter most to you right now: Freedom, Security, Family, Adventure, Contribution, Achievement, Independence, Health, Learning, Community?"
+      - "Who depends on you, financially or otherwise, and how does that shape your priorities?"
+      - "Is there a legacy - for family, for a cause, for anything - that you want to build toward?"
+      - "What family responsibilities or caring duties are part of your life right now or expected in future?"
+    soft_fact_outputs:
+      - top_five_values
+      - family_impact_summary
+    output_name: "Top Five Values, Family Impact Summary"
+    requests_contact: false
+    captures_hard_facts: false
+
+  - name: steward
+    titan: "The Steward"
+    display_name: "Steward"
+    framing: >
+      This is where we start looking at the practical side - your relationship
+      with money, and then the numbers themselves. Before we go further, can I
+      get your first name and an email address so I can send you what we build
+      together?
+    questions:
+      - "How did your family talk about money when you were growing up - was it open, tense, avoided?"
+      - "What's the best financial decision you've made, and what's one you'd do differently?"
+      - "Right now, how confident do you feel about your finances - really, honestly?"
+      - "What's coming in, what's going out, and what do you already hold in savings, investments, or property?"
+      - "What financial products or arrangements do you already have in place - pensions, ISAs, insurance, anything else?"
+    soft_fact_outputs:
+      - money_story_summary
+    output_name: "Money Story Summary"
+    requests_contact: true
+    captures_hard_facts: true
+
+  - name: guardian
+    titan: "The Guardian"
+    display_name: "Guardian"
+    framing: >
+      Last stretch. Let's look at what could get in the way, and what needs
+      protecting.
+    questions:
+      - "When you think about taking action on your finances, what tends to get in the way - putting it off, feeling unsure, something else?"
+      - "Do you tend to take financial decisions on yourself, or hand them off to someone else?"
+      - "What would derail your plans if it happened tomorrow - and are you protected against it?"
+      - "What liabilities, debts, or ongoing obligations should we know about?"
+    soft_fact_outputs:
+      - behavioural_friction_profile
+    output_name: "Behavioural Friction Profile"
+    requests_contact: false
+    captures_hard_facts: true

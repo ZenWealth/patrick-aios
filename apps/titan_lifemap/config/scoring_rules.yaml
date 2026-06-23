@@ -1,0 +1,65 @@
+# Titan LifeMap - Scoring Rules
+#
+# Built out fully in Step 7 of the implementation plan.
+# This stub exists so config_loader.py validate_all() passes during earlier steps.
+#
+# Keys used by analysis.py:
+#   behavioural_friction  - pattern weights/labels for the Behavioural Friction Profile
+#   clarity_score         - weights used to compute the Titan Clarity Score (0-100)
+#   momentum_plan         - rules for generating the Titan Momentum Plan action list
+
+behavioural_friction:
+  patterns:
+    procrastination:
+      label: "Procrastination"
+      weight: 1.0
+    avoidance:
+      label: "Avoidance"
+      weight: 1.0
+    overthinking:
+      label: "Overthinking"
+      weight: 1.0
+    impulsiveness:
+      label: "Impulsiveness"
+      weight: 1.0
+    delegation:
+      label: "Delegation"
+      weight: 1.0
+    lack_of_confidence:
+      label: "Lack of Confidence"
+      weight: 1.0
+  note: "Diagnosis only - kept explicitly separate from BEA (intervention framework)"
+
+clarity_score:
+  components:
+    vision_clarity:
+      weight: 0.25
+      description: "How clearly the client articulates their future vision"
+    values_alignment:
+      weight: 0.20
+      description: "Alignment between stated values and life priorities"
+    legacy_intention:
+      weight: 0.20
+      description: "Clarity of legacy and meaning intention"
+    money_relationship:
+      weight: 0.20
+      description: "Self-awareness about their relationship with money"
+    friction_awareness:
+      weight: 0.15
+      description: "Awareness of their own behavioural friction patterns"
+  scale:
+    min: 0
+    max: 100
+    thresholds:
+      low: 40
+      medium: 65
+      high: 80
+
+momentum_plan:
+  max_actions: 5
+  categories:
+    - financial_clarity
+    - behavioural_shift
+    - life_design
+    - protection_gaps
+    - professional_advice

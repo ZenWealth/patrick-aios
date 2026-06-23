@@ -1,0 +1,89 @@
+# Titan LifeMap - Adviser Report Template
+#
+# The report generated for the adviser introduction route.
+# Clinical, precise, complete. Written for a Chartered Financial Planner.
+# Includes all hard facts and behavioural context an adviser needs pre-meeting.
+# Built out fully in Step 8 of the implementation plan.
+
+report_title: "Titan LifeMap — Adviser Briefing"
+subtitle: "Pre-meeting briefing for adviser introduction — Sustain Momentum"
+confidentiality_note: "This document is prepared for adviser use only. It contains personal and financial data provided by the client."
+
+sections:
+  - id: client_overview
+    title: "Client Overview"
+    instruction: |
+      Full name (if provided), session date, route, Clarity Score.
+      2-3 sentence summary of the client and their primary financial planning need.
+
+  - id: life_goals
+    title: "Life Goals and Vision"
+    source_fields: [future_vision_statement, personal_enough_statement, legacy_statement]
+    instruction: |
+      Precise summary of the client's stated life goals, vision, and legacy intention.
+      Include direct quotes where relevant. This section should give the adviser a clear
+      picture of what financial planning success looks like for this client.
+
+  - id: values
+    title: "Values Profile"
+    source_field: top_five_values
+    instruction: |
+      List the five values with brief adviser commentary on each. How might each
+      value affect financial planning decisions or recommendations?
+
+  - id: financial_position
+    title: "Current Financial Position"
+    source_fields: [income, expenses, assets, liabilities, existing_arrangements, dependants]
+    instruction: |
+      Present all hard facts in structured form. Flag any gaps (data not provided).
+      Note: this data is self-reported during a guided conversation - treat as indicative
+      pending formal fact-find.
+
+  - id: money_story
+    title: "Money Relationship and Story"
+    source_field: money_story_summary
+    instruction: |
+      Summary of the client's self-reported relationship with money. Include the
+      best decision and regret they mentioned. Note any beliefs that may affect
+      the advice relationship.
+
+  - id: hwh_scorecard
+    title: "Health-Wealth-Happiness Scorecard"
+    source_field: health_wealth_happiness_scorecard
+    instruction: |
+      Present scorecard with numbers. Flag the largest gap as a priority theme
+      for the first meeting.
+
+  - id: behavioural_friction
+    title: "Behavioural Friction Profile"
+    source_field: behavioural_friction_profile
+    instruction: |
+      Full six-pattern profile with scores. Include adviser notes: which patterns
+      are likely to affect engagement, compliance, or decision-making? How should
+      the adviser adapt their communication style?
+
+  - id: clarity_score_breakdown
+    title: "Titan Clarity Score — Component Breakdown"
+    instruction: |
+      Present the overall score and all five component scores with brief commentary.
+      Note which components suggest the highest priority for early work.
+
+  - id: momentum_plan
+    title: "Recommended Momentum Plan"
+    source_field: momentum_plan
+    instruction: |
+      Present the five-action plan with adviser framing. Which actions fall within
+      regulated advice scope? Which are life planning / coaching scope?
+
+  - id: protection_and_gaps
+    title: "Protection Needs and Gaps"
+    instruction: |
+      Based on the full session data, identify protection gaps (income, life, critical
+      illness, estate planning) and flag for the first meeting agenda.
+
+  - id: meeting_preparation
+    title: "First Meeting Preparation Notes"
+    instruction: |
+      3-5 specific preparation notes for the adviser. What should they prioritise?
+      What should they avoid in approach? What does this client most need from this
+      first meeting to trust the relationship?

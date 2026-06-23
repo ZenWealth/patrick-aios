@@ -30,6 +30,7 @@ CREATE TABLE IF NOT EXISTS titan_sessions (
     route TEXT,
     first_name TEXT,
     email TEXT,
+    conversation_history TEXT,
     updated_at TEXT NOT NULL
 );
 
@@ -95,6 +96,10 @@ def init_db() -> sqlite3.Connection:
     conn.execute("PRAGMA journal_mode=WAL")
     conn.execute("PRAGMA foreign_keys=ON")
     conn.executescript(SCHEMA_SQL)
+    # Add conversation_history if it was not in the original schema
+    cols = [r[1] for r in conn.execute("PRAGMA table_info(titan_sessions)").fetchall()]
+    if "conversation_history" not in cols:
+        conn.execute("ALTER TABLE titan_sessions ADD COLUMN conversation_history TEXT")
     conn.commit()
     return conn
 

@@ -1,0 +1,67 @@
+# Titan LifeMap - Internal AI Profile Template
+#
+# The Internal AI Profile is generated automatically on every session completion.
+# It is NEVER shown to clients. It has NO API endpoint that can return it.
+# It is stored only in titan_internal_profiles and accessed only internally.
+#
+# "The client sees the report. GAIA sees the person."
+#
+# Built out fully in Step 8 of the implementation plan.
+
+report_title: "Internal AI Profile"
+subtitle: "GAIA Internal — Not for client disclosure"
+access_restriction: "This profile is generated for internal GAIA use only. Never expose via API. Never include in client-facing output."
+
+sections:
+  - id: psychological_summary
+    title: "Psychological Summary"
+    instruction: |
+      Plain-language assessment of who this person is psychologically, based on everything
+      they shared. Not a clinical diagnosis - a skilled, empathetic read. What is this
+      person's relationship with themselves? With others? With the future?
+      3-5 paragraphs. Be candid - this is never read by the client.
+
+  - id: core_tensions
+    title: "Core Tensions and Themes"
+    instruction: |
+      Identify 3-5 central tensions in what the person shared. Examples: vision vs
+      inaction; stated values vs actual behaviour; ambition vs fear; family obligation
+      vs personal freedom. For each tension, describe it clearly and note its likely
+      financial planning implication.
+
+  - id: what_they_need
+    title: "What This Person Most Needs"
+    instruction: |
+      What does this person most need from a professional relationship - that they may
+      not have said explicitly, or may not fully know themselves? Be specific.
+      This is the single most important section for ensuring good outcomes.
+
+  - id: gaps_and_inconsistencies
+    title: "Gaps and Inconsistencies"
+    instruction: |
+      Note any places where: stated priorities conflict with stated behaviour; hard facts
+      don't match the life picture they described; important data was absent or deflected.
+      Flag anything the adviser should probe in person rather than accept at face value.
+
+  - id: behavioural_friction_deep
+    title: "Behavioural Friction — Deep Profile"
+    source_field: behavioural_friction_profile
+    instruction: |
+      Go deeper than the scored profile. What is the likely root cause of each significant
+      friction pattern? How are they likely to show up in the adviser relationship specifically?
+      What would help - and what would make them worse?
+
+  - id: adviser_briefing
+    title: "Adviser Preparation Notes"
+    instruction: |
+      Specific, candid notes for whoever works with this person. How should they enter
+      the first meeting? What should they lead with? What should they absolutely avoid?
+      What does this person need to feel safe enough to act?
+
+  - id: gaia_memory_tags
+    title: "GAIA Memory Tags"
+    instruction: |
+      Generate 5-10 structured tags that characterise this person for GAIA's memory system.
+      Format: category:value (e.g. friction:procrastination, stage:pre-accumulation,
+      priority:protection, relationship:family-first, confidence:low-financial).
+      These tags enable future GAIA sessions to build context from prior work.

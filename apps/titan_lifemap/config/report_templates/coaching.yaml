@@ -1,0 +1,71 @@
+# Titan LifeMap - Coaching Report Template
+#
+# The report generated for the coaching route (Patrick's 1:1 coaching work).
+# Professional, insight-focused. Includes behavioural friction analysis.
+# Built out fully in Step 8 of the implementation plan.
+
+report_title: "Titan LifeMap — Coaching Report"
+subtitle: "Prepared for coaching engagement — Sustain Momentum"
+
+sections:
+  - id: client_snapshot
+    title: "Client Snapshot"
+    instruction: |
+      A concise 3-4 sentence overview of who this person is, what they came with,
+      and the central theme of their session. Written for a coach reading this before
+      a first session.
+
+  - id: life_vision
+    title: "Life Vision and Enough Point"
+    source_fields: [future_vision_statement, personal_enough_statement]
+    instruction: |
+      Synthesise vision and enough into a single narrative. Where are they clear?
+      Where is there tension between what they want and what they've defined as enough?
+
+  - id: values_and_legacy
+    title: "Values and Legacy Intention"
+    source_fields: [top_five_values, legacy_statement]
+    instruction: |
+      Present values and legacy together. Note any alignment or conflict between
+      their stated values and their legacy intention.
+
+  - id: hwh_scorecard
+    title: "Health-Wealth-Happiness Scorecard"
+    source_field: health_wealth_happiness_scorecard
+    instruction: |
+      Present the scorecard with coaching commentary. Where is the gap largest?
+      What does that gap suggest about coaching focus?
+
+  - id: money_story
+    title: "Money Story"
+    source_field: money_story_summary
+    instruction: |
+      Summarise the client's relationship with money based on what they shared.
+      What patterns are visible? What childhood or early experiences shaped them?
+      Be specific, not generic.
+
+  - id: behavioural_friction
+    title: "Behavioural Friction Profile"
+    source_field: behavioural_friction_profile
+    instruction: |
+      Present the six-pattern Behavioural Friction Profile with scores and commentary.
+      Which patterns dominate? How might they show up in coaching? This is diagnostic only.
+
+  - id: clarity_score
+    title: "Titan Clarity Score"
+    instruction: |
+      Present the score with component breakdown. Note which components are highest
+      and lowest - these suggest where coaching will have most impact.
+
+  - id: momentum_plan
+    title: "Coaching Momentum Plan"
+    source_field: momentum_plan
+    instruction: |
+      Frame the Momentum Plan as a coaching agenda rather than a to-do list.
+      What does each action require the client to confront or develop?
+
+  - id: coaching_notes
+    title: "Approach Notes"
+    instruction: |
+      3-5 bullet points for the coach. How should they approach this person?
+      What should they watch for? What might this client resist?
