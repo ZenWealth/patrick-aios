@@ -16,7 +16,7 @@ import uuid
 import logging
 from contextlib import asynccontextmanager
 
-from fastapi import FastAPI, HTTPException
+from fastapi import BackgroundTasks, FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 
@@ -80,14 +80,9 @@ class SessionStatus(BaseModel):
     route: str | None
 
 
-class CompletionResult(BaseModel):
+class CompletionAck(BaseModel):
     session_id: str
-    analysis: bool
-    route: str | None
-    report_generated: bool
-    email_sent: bool
-    webhook_fired: bool
-    clarity_score: float | None = None
+    status: str  # "processing" | "already_processed"
 
 
 # --- Endpoints ---
@@ -153,16 +148,25 @@ async def session_status(session_id: str):
     )
 
 
-@app.post("/session/{session_id}/complete", response_model=CompletionResult)
-async def complete_session(session_id: str):
+@app.post("/session/{session_id}/complete", response_model=CompletionAck)
+async def complete_session(session_id: str, background_tasks: BackgroundTasks):
     """Trigger the post-session workflow: analyse, generate report, email, webhook.
 
-    Called when the conversation engine signals session_complete=True.
-    The Internal AI Profile is generated here (stored internally, never returned).
+    Called by the frontend when the conversation engine signals session_complete=True.
+    The workflow (Claude analysis + per-section generation + WeasyPrint render) takes
+    30-90s, so it runs in a background thread and this endpoint returns immediately.
+    The Internal AI Profile is generated there (stored internally, never returned).
+
+    Idempotent: if analysis has already produced scores for this session, the workflow
+    is not re-run — so repeated POSTs (refresh, double-submit) won't regenerate or
+    re-send the report.
     """
     conn = get_connection()
     try:
         session = get_session(conn, session_id)
+        already_processed = conn.execute(
+            "SELECT 1 FROM titan_scores WHERE session_id = ?", (session_id,)
+        ).fetchone() is not None
     finally:
         conn.close()
 
@@ -170,9 +174,11 @@ async def complete_session(session_id: str):
         raise HTTPException(status_code=404, detail="Session not found")
     if not session["completed"]:
         raise HTTPException(status_code=400, detail="Session is not yet complete")
+    if already_processed:
+        return CompletionAck(session_id=session_id, status="already_processed")
 
-    result = routing.run_completion_workflow(session_id)
-    return CompletionResult(**result)
+    background_tasks.add_task(routing.run_completion_workflow, session_id)
+    return CompletionAck(session_id=session_id, status="processing")
 
 
 @app.get("/health")

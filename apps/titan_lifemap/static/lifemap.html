@@ -629,6 +629,13 @@
       setWaiting(false);
 
       if (data.session_complete) {
+        // Kick off the post-session workflow (analysis, report, email) on the server.
+        // Fire-and-forget: the heavy render runs in a background thread server-side,
+        // so we don't wait on it. The request reaches the server even if the response
+        // is cross-origin, so report delivery is triggered regardless.
+        fetch(API_BASE + '/session/' + sessionId + '/complete', { method: 'POST' })
+          .catch(function () { /* best-effort; delivery is handled server-side */ });
+
         // Show completion screen
         const emailNote = document.getElementById('complete-email-note');
         emailNote.textContent = data.has_contact
