@@ -15,6 +15,7 @@ via any API endpoint. See reports/internal.py.
 """
 
 import logging
+import re
 from pathlib import Path
 
 import anthropic
@@ -106,6 +107,19 @@ def generate_sections(
     return section_content
 
 
+def _clean_markdown(text: str) -> str:
+    """Strip stray markdown the model sometimes emits.
+
+    The report template renders plain text, so emphasis markers like *word*,
+    **word** or _word_ would otherwise show literally in the PDF. Section
+    instructions ask for plain text, but this is a belt-and-braces guard.
+    """
+    text = re.sub(r'\*\*([^*\n]+?)\*\*', r'\1', text)   # **bold**
+    text = re.sub(r'\*([^*\n]+?)\*', r'\1', text)        # *italic*
+    text = re.sub(r'(?<!\w)_([^_\n]+?)_(?!\w)', r'\1', text)  # _italic_
+    return text
+
+
 def render_html(
     report_type: str,
     session_data: dict,
@@ -113,6 +127,7 @@ def render_html(
 ) -> str:
     """Render section content into the HTML template for this report type."""
     report_config = get_report_template(report_type)
+    section_content = {k: _clean_markdown(v) for k, v in section_content.items()}
     env = Environment(loader=FileSystemLoader(str(TEMPLATES_DIR)))
 
     # Use report-type-specific template if it exists, fall back to base
