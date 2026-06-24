@@ -296,7 +296,8 @@ def _capture_contact_if_present(
     capture as a natural part of the conversation, not a form. If the user typed
     an email address anywhere in their message, we record it.
     """
-    email_match = re.search(r'\b[\w.+-]+@[\w-]+\.[a-z]{2,}\b', user_message, re.IGNORECASE)
+    # Match the full domain including multi-part TLDs (e.g. zen.co.uk, not just zen.co).
+    email_match = re.search(r'[\w.+-]+@[\w-]+(?:\.[\w-]+)+', user_message, re.IGNORECASE)
     if not email_match:
         return
 
