@@ -108,6 +108,13 @@ BLOCK 1 — SCORES (for the client-facing reports and database):
     "impulsiveness": "<one insight sentence>",
     "delegation": "<one insight sentence>",
     "lack_of_confidence": "<one insight sentence>"
+  }},
+  "friction_diagnosis": {{
+    "primary_friction": {{"name": "<named pattern>", "how_it_shows_up": "<1-2 sentences>"}},
+    "secondary_frictions": [{{"name": "<named>", "note": "<short note>"}}],
+    "cost": "<what these frictions concretely cost them>",
+    "behavioural_shift": "From <old behaviour> to <new behaviour>",
+    "holding_you_back": "<one sentence answering 'what is actually holding me back?'>"
   }}
 }}
 ```
@@ -192,14 +199,17 @@ def run_analysis(session_id: str) -> dict:
             behavioural_friction_scores=scores["behavioural_friction_scores"],
             core_transition=scores.get("core_transition"),
             behavioural_friction_insights=scores.get("behavioural_friction_insights"),
+            friction_diagnosis=scores.get("friction_diagnosis"),
         )
 
         # Store Internal AI Profile — no endpoint exposes this
         save_internal_profile(conn, session_id, internal_profile)
 
+        diag = scores.get("friction_diagnosis") or {}
+        primary = (diag.get("primary_friction") or {}).get("name")
         logger.info(
-            "Analysis complete for session %s: clarity_score=%.1f core_transition=%r",
-            session_id, scores["clarity_score"], scores.get("core_transition")
+            "Analysis complete for session %s: clarity_score=%.1f core_transition=%r primary_friction=%r",
+            session_id, scores["clarity_score"], scores.get("core_transition"), primary
         )
 
         return {
@@ -207,6 +217,7 @@ def run_analysis(session_id: str) -> dict:
             "core_transition": scores.get("core_transition"),
             "momentum_plan": scores["momentum_plan"],
             "behavioural_friction_scores": scores["behavioural_friction_scores"],
+            "friction_diagnosis": scores.get("friction_diagnosis"),
         }
 
     finally:

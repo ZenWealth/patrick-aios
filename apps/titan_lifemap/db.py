@@ -67,6 +67,7 @@ CREATE TABLE IF NOT EXISTS titan_scores (
     momentum_plan TEXT,
     behavioural_friction_scores TEXT,
     behavioural_friction_insights TEXT,
+    friction_diagnosis TEXT,
     updated_at TEXT NOT NULL,
     FOREIGN KEY (session_id) REFERENCES titan_sessions(session_id)
 );
@@ -109,6 +110,8 @@ def init_db() -> sqlite3.Connection:
         conn.execute("ALTER TABLE titan_scores ADD COLUMN core_transition TEXT")
     if "behavioural_friction_insights" not in score_cols:
         conn.execute("ALTER TABLE titan_scores ADD COLUMN behavioural_friction_insights TEXT")
+    if "friction_diagnosis" not in score_cols:
+        conn.execute("ALTER TABLE titan_scores ADD COLUMN friction_diagnosis TEXT")
     conn.commit()
     return conn
 
@@ -193,15 +196,18 @@ def upsert_hard_facts(conn: sqlite3.Connection, session_id: str, **fields) -> No
 def save_scores(conn: sqlite3.Connection, session_id: str, clarity_score: float,
                  momentum_plan: list, behavioural_friction_scores: dict,
                  core_transition: str | None = None,
-                 behavioural_friction_insights: dict | None = None) -> None:
+                 behavioural_friction_insights: dict | None = None,
+                 friction_diagnosis: dict | None = None) -> None:
     conn.execute(
         "INSERT OR REPLACE INTO titan_scores "
         "(session_id, clarity_score, core_transition, momentum_plan, "
-        "behavioural_friction_scores, behavioural_friction_insights, updated_at) "
-        "VALUES (?, ?, ?, ?, ?, ?, ?)",
+        "behavioural_friction_scores, behavioural_friction_insights, "
+        "friction_diagnosis, updated_at) "
+        "VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
         (session_id, clarity_score, core_transition, json.dumps(momentum_plan),
          json.dumps(behavioural_friction_scores),
-         json.dumps(behavioural_friction_insights or {}), _now())
+         json.dumps(behavioural_friction_insights or {}),
+         json.dumps(friction_diagnosis or {}), _now())
     )
     conn.commit()
 

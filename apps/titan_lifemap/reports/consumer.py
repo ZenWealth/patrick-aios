@@ -36,6 +36,9 @@ def build(session_id: str, as_pdf: bool = True) -> bytes | str:
                 "behavioural_friction_scores": json.loads(
                     score_row["behavioural_friction_scores"] or "{}"
                 ),
+                "friction_diagnosis": json.loads(
+                    score_row["friction_diagnosis"] or "{}"
+                ) if "friction_diagnosis" in score_keys else {},
             }
 
         session_data = {

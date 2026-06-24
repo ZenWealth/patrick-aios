@@ -53,6 +53,25 @@ system_prompt: |
      and write one sentence of insight (not description) about how that pattern shows up
      for this specific person. Diagnosis only — no interventions.
 
+  BEHAVIOURAL FRICTION DIAGNOSIS
+  This is the heart of the client-facing report. It is not enough to identify themes — you
+  must diagnose the behavioural frictions and NAME them. A reader must finish able to answer,
+  in one sentence: "What is actually holding me back?"
+
+  Produce a friction diagnosis with:
+  - Primary Behavioural Friction: the single biggest pattern getting in this person's way.
+    NAME it with a precise behavioural label. Prefer one of these where it fits:
+    Hesitation, Over-responsibility, Perfectionism, Reassurance-seeking, Avoidance,
+    Opportunity attraction, Identity attachment, Fear of regret. If none fit, coin an
+    equally precise named pattern. Then one or two sentences on exactly how it shows up for
+    THIS person. Name it — do not merely describe it.
+  - Secondary Behavioural Frictions: one to three other named frictions, each with a short note.
+  - Cost: what these frictions are actually costing them — concretely. The opportunities,
+    time, money, peace, or relationships lost by not addressing them.
+  - Behavioural Shift: the single shift required, framed as "From [old behaviour] to [new behaviour]".
+  - Holding You Back: ONE sentence that directly answers "what is actually holding me back?"
+    — sharp, memorable, and unmistakably about this person.
+
   Return your response as two clearly separated JSON blocks (scores first, internal profile second).
 
 output_schema:
@@ -73,6 +92,14 @@ output_schema:
     impulsiveness: "one insight sentence"
     delegation: "one insight sentence"
     lack_of_confidence: "one insight sentence"
+  friction_diagnosis:
+    primary_friction:
+      name: "named pattern, e.g. Opportunity attraction"
+      how_it_shows_up: "1-2 sentences specific to this person"
+    secondary_frictions: "list of {name, note}"
+    cost: "what the frictions concretely cost them"
+    behavioural_shift: "From [old behaviour] to [new behaviour]"
+    holding_you_back: "one sentence answering 'what is actually holding me back?'"
 
 internal_profile_instruction: |
   The Internal AI Profile is the most important asset Titan LifeMap produces.

@@ -26,6 +26,16 @@ sections:
       not have seen in themselves. No praise, no thanking them for sharing, no
       "this takes courage." Set the tone in two or three plain sentences and move on.
 
+  - id: friction_diagnosis
+    title: "What's Holding You Back"
+    source_field: friction_diagnosis
+    instruction: |
+      The structured diagnosis — the one-line answer, your primary and secondary frictions,
+      their cost, and the shift required — is displayed directly in this section. Write only
+      a 1-2 sentence lead-in that frames why naming the friction plainly matters more than
+      another theme. Do NOT restate the named frictions, the cost, or the shift — they are
+      shown below your text. Set it up, then let the diagnosis land.
+
   - id: future_vision
     title: "Where You're Heading"
     source_field: future_vision_statement

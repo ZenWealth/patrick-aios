@@ -76,6 +76,20 @@ FRICTION_INSIGHTS = {
     "lack_of_confidence": "Confident externally; the private doubt is whether enough will ever feel like enough.",
 }
 
+FRICTION_DIAGNOSIS = {
+    "primary_friction": {
+        "name": "Identity attachment",
+        "how_it_shows_up": "His sense of who he is is bound up with being the one everything runs through. Stepping back doesn't feel like freedom — it feels like disappearing, so he keeps making himself necessary.",
+    },
+    "secondary_frictions": [
+        {"name": "Over-responsibility", "note": "hoards strategic decisions he could hand over"},
+        {"name": "Avoidance", "note": "defers the one risk he can't delegate — his health"},
+    ],
+    "cost": "It keeps him running toward a finish line he quietly keeps moving, deferring the winters-writing life he has already described — while the unhedged health risk compounds in the background.",
+    "behavioural_shift": "From being the person everything depends on, to building things that no longer depend on him.",
+    "holding_you_back": "What's holding you back isn't money — it's that stepping back still feels like disappearing, so you keep making yourself indispensable.",
+}
+
 
 def seed():
     conn = get_connection()
@@ -100,7 +114,8 @@ def seed():
     save_scores(conn, SID, clarity_score=72.0, momentum_plan=MOMENTUM_PLAN,
                 behavioural_friction_scores=FRICTION_SCORES,
                 core_transition="From building to entrusting",
-                behavioural_friction_insights=FRICTION_INSIGHTS)
+                behavioural_friction_insights=FRICTION_INSIGHTS,
+                friction_diagnosis=FRICTION_DIAGNOSIS)
     conn.close()
     print("Seeded:", SID, "| report type:", REPORT_TYPE)
 

@@ -91,6 +91,44 @@
       color: #fff;
     }
 
+    .friction-callout {
+      border-left: 4px solid #BFA046;
+      background: #faf7ef;
+      padding: 1em 1.3em;
+      margin: 0.3em 0 1.3em 0;
+      page-break-inside: avoid;
+    }
+
+    .friction-callout-label {
+      font-size: 8.5pt;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: #BFA046;
+      margin: 0 0 0.35em 0;
+    }
+
+    .friction-callout-line {
+      font-size: 13pt;
+      font-weight: bold;
+      color: #283566;
+      line-height: 1.4;
+      margin: 0;
+    }
+
+    .friction-line {
+      margin: 0 0 0.7em 0;
+    }
+
+    .friction-tag {
+      display: block;
+      font-size: 8.5pt;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: #BFA046;
+      font-weight: bold;
+      margin-bottom: 0.15em;
+    }
+
     .section-content {
       font-size: 11pt;
       line-height: 1.65;
@@ -220,6 +258,40 @@
         <li>{{ action }}</li>
         {% endfor %}
       </ul>
+      {% endif %}
+
+      {% if section.id == 'friction_diagnosis' and scores.friction_diagnosis %}
+      {% set fd = scores.friction_diagnosis %}
+      {% if fd.holding_you_back %}
+      <div class="friction-callout">
+        <p class="friction-callout-label">What's actually holding you back</p>
+        <p class="friction-callout-line">{{ fd.holding_you_back }}</p>
+      </div>
+      {% endif %}
+      {% if fd.primary_friction and fd.primary_friction.name %}
+      <p class="friction-line">
+        <span class="friction-tag">Primary friction</span>
+        <strong>{{ fd.primary_friction.name }}.</strong> {{ fd.primary_friction.how_it_shows_up }}
+      </p>
+      {% endif %}
+      {% if fd.secondary_frictions %}
+      <p class="friction-line">
+        <span class="friction-tag">Also at play</span>
+        {% for s in fd.secondary_frictions %}<strong>{{ s.name }}</strong>{% if s.note %} — {{ s.note }}{% endif %}{% if not loop.last %}; {% endif %}{% endfor %}.
+      </p>
+      {% endif %}
+      {% if fd.cost %}
+      <p class="friction-line">
+        <span class="friction-tag">What it's costing you</span>
+        {{ fd.cost }}
+      </p>
+      {% endif %}
+      {% if fd.behavioural_shift %}
+      <p class="friction-line">
+        <span class="friction-tag">The shift required</span>
+        {{ fd.behavioural_shift }}
+      </p>
+      {% endif %}
       {% endif %}
     </div>
   </div>
