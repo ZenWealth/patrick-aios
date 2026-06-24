@@ -195,11 +195,20 @@ def send_message(session_id: str, user_message: str) -> ConversationResponse:
         history.append({"role": "assistant", "content": assistant_text})
         _save_history(conn, session_id, history)
 
+        discovery_complete = _detect_discovery_complete(assistant_text)
         stage_complete = _detect_stage_complete(assistant_text, current_stage_name)
         session_complete = False
         next_stage = _next_stage(current_stage_name)
 
-        if stage_complete:
+        if discovery_complete:
+            # Full discovery complete — synthesise and close regardless of stage
+            soft_facts = _extract_soft_facts(assistant_text, current_stage_name)
+            if soft_facts:
+                upsert_soft_facts(conn, session_id, **soft_facts)
+            update_session(conn, session_id, completed=1)
+            session_complete = True
+
+        elif stage_complete:
             soft_facts = _extract_soft_facts(assistant_text, current_stage_name)
             if soft_facts:
                 upsert_soft_facts(conn, session_id, **soft_facts)
@@ -224,14 +233,18 @@ def send_message(session_id: str, user_message: str) -> ConversationResponse:
 
 
 def _detect_stage_complete(text: str, stage_name: str) -> bool:
-    """Heuristic: Claude signals stage completion with a specific phrase.
-
-    Convention: Claude includes [STAGE_COMPLETE] at the end of its response
-    when it's ready to move to the next stage. This is set in conversation.yaml's
-    stage_transition_instruction. The analysis pass does a deeper extraction of
-    soft facts regardless.
+    """Claude signals stage completion with [STAGE_COMPLETE].
+    Not used when [DISCOVERY_COMPLETE] is present — that supersedes it.
     """
-    return "[STAGE_COMPLETE]" in text
+    return "[STAGE_COMPLETE]" in text and "[DISCOVERY_COMPLETE]" not in text
+
+
+def _detect_discovery_complete(text: str) -> bool:
+    """Claude signals the full discovery is complete with [DISCOVERY_COMPLETE].
+    This fires after the Verbal Synthesis and Core Transition sequence,
+    regardless of which stage we are in. It supersedes [STAGE_COMPLETE].
+    """
+    return "[DISCOVERY_COMPLETE]" in text
 
 
 def _capture_contact_if_present(
