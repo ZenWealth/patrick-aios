@@ -28,8 +28,10 @@ def build(session_id: str, as_pdf: bool = True) -> bytes | str:
         import json
         scores = {}
         if score_row:
+            score_keys = score_row.keys()
             scores = {
                 "clarity_score": score_row["clarity_score"],
+                "core_transition": score_row["core_transition"] if "core_transition" in score_keys else None,
                 "momentum_plan": json.loads(score_row["momentum_plan"] or "[]"),
                 "behavioural_friction_scores": json.loads(
                     score_row["behavioural_friction_scores"] or "{}"

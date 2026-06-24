@@ -20,7 +20,7 @@
     }
 
     .report-header {
-      border-bottom: 3px solid #2d6a8f;
+      border-bottom: 3px solid #283566;
       padding-bottom: 1.2em;
       margin-bottom: 2em;
     }
@@ -28,7 +28,7 @@
     .report-title {
       font-size: 22pt;
       font-weight: bold;
-      color: #2d6a8f;
+      color: #283566;
       margin: 0 0 0.2em 0;
       letter-spacing: -0.5px;
     }
@@ -59,10 +59,36 @@
     .section-title {
       font-size: 14pt;
       font-weight: bold;
-      color: #2d6a8f;
-      border-left: 4px solid #2d6a8f;
+      color: #283566;
+      border-left: 4px solid #BFA046;
       padding-left: 0.6em;
       margin-bottom: 0.8em;
+    }
+
+    .core-transition {
+      background: #283566;
+      color: #fff;
+      padding: 1.6em 1.8em;
+      margin: 0 0 2.2em 0;
+      border-radius: 4px;
+      text-align: center;
+      page-break-inside: avoid;
+    }
+
+    .core-transition-label {
+      font-size: 9pt;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: #BFA046;
+      margin: 0 0 0.5em 0;
+    }
+
+    .core-transition-phrase {
+      font-size: 22pt;
+      font-weight: bold;
+      line-height: 1.25;
+      margin: 0;
+      color: #fff;
     }
 
     .section-content {
@@ -76,7 +102,7 @@
 
     .score-box {
       background: #f0f7fb;
-      border: 1px solid #2d6a8f;
+      border: 1px solid #283566;
       border-radius: 4px;
       padding: 1em 1.5em;
       margin: 0.5em 0 1em 0;
@@ -86,7 +112,7 @@
     .score-number {
       font-size: 28pt;
       font-weight: bold;
-      color: #2d6a8f;
+      color: #283566;
     }
 
     .score-label {
@@ -114,7 +140,7 @@
       top: 0.4em;
       width: 1.8em;
       height: 1.8em;
-      background: #2d6a8f;
+      background: #283566;
       color: white;
       border-radius: 50%;
       font-size: 9pt;
@@ -156,6 +182,13 @@
     <p class="report-date">{{ session.started_at[:10] if session.started_at else '' }}</p>
   </div>
 
+  {% if scores.core_transition %}
+  <div class="core-transition">
+    <p class="core-transition-label">Your Core Transition</p>
+    <p class="core-transition-phrase">{{ scores.core_transition }}</p>
+  </div>
+  {% endif %}
+
   {% if report_config.get('confidentiality_note') or report_config.get('access_restriction') %}
   <div class="confidential-banner">
     {{ report_config.get('confidentiality_note') or report_config.get('access_restriction') }}
@@ -175,6 +208,12 @@
       </div>
       {% endif %}
 
+      {% for paragraph in content.split('\n\n') %}
+      {% if paragraph.strip() %}
+      <p>{{ paragraph.strip() }}</p>
+      {% endif %}
+      {% endfor %}
+
       {% if section.id == 'momentum_plan' and scores.momentum_plan %}
       <ul class="momentum-list">
         {% for action in scores.momentum_plan %}
@@ -182,12 +221,6 @@
         {% endfor %}
       </ul>
       {% endif %}
-
-      {% for paragraph in content.split('\n\n') %}
-      {% if paragraph.strip() %}
-      <p>{{ paragraph.strip() }}</p>
-      {% endif %}
-      {% endfor %}
     </div>
   </div>
   {% endif %}

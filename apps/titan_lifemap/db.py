@@ -63,8 +63,10 @@ CREATE TABLE IF NOT EXISTS titan_hard_facts (
 CREATE TABLE IF NOT EXISTS titan_scores (
     session_id TEXT PRIMARY KEY,
     clarity_score REAL,
+    core_transition TEXT,
     momentum_plan TEXT,
     behavioural_friction_scores TEXT,
+    behavioural_friction_insights TEXT,
     updated_at TEXT NOT NULL,
     FOREIGN KEY (session_id) REFERENCES titan_sessions(session_id)
 );
@@ -100,6 +102,13 @@ def init_db() -> sqlite3.Connection:
     cols = [r[1] for r in conn.execute("PRAGMA table_info(titan_sessions)").fetchall()]
     if "conversation_history" not in cols:
         conn.execute("ALTER TABLE titan_sessions ADD COLUMN conversation_history TEXT")
+    # Step 8: Core Transition (the LifeMap centrepiece) + per-pattern friction
+    # insights added to the scores table. Migrate existing databases in place.
+    score_cols = [r[1] for r in conn.execute("PRAGMA table_info(titan_scores)").fetchall()]
+    if "core_transition" not in score_cols:
+        conn.execute("ALTER TABLE titan_scores ADD COLUMN core_transition TEXT")
+    if "behavioural_friction_insights" not in score_cols:
+        conn.execute("ALTER TABLE titan_scores ADD COLUMN behavioural_friction_insights TEXT")
     conn.commit()
     return conn
 
@@ -182,13 +191,17 @@ def upsert_hard_facts(conn: sqlite3.Connection, session_id: str, **fields) -> No
 
 
 def save_scores(conn: sqlite3.Connection, session_id: str, clarity_score: float,
-                 momentum_plan: list, behavioural_friction_scores: dict) -> None:
+                 momentum_plan: list, behavioural_friction_scores: dict,
+                 core_transition: str | None = None,
+                 behavioural_friction_insights: dict | None = None) -> None:
     conn.execute(
         "INSERT OR REPLACE INTO titan_scores "
-        "(session_id, clarity_score, momentum_plan, behavioural_friction_scores, updated_at) "
-        "VALUES (?, ?, ?, ?, ?)",
-        (session_id, clarity_score, json.dumps(momentum_plan),
-         json.dumps(behavioural_friction_scores), _now())
+        "(session_id, clarity_score, core_transition, momentum_plan, "
+        "behavioural_friction_scores, behavioural_friction_insights, updated_at) "
+        "VALUES (?, ?, ?, ?, ?, ?, ?)",
+        (session_id, clarity_score, core_transition, json.dumps(momentum_plan),
+         json.dumps(behavioural_friction_scores),
+         json.dumps(behavioural_friction_insights or {}), _now())
     )
     conn.commit()
 

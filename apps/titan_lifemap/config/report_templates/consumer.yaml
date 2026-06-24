@@ -1,71 +1,96 @@
 # Titan LifeMap - Consumer Report Template
 #
 # The report a client receives after completing their discovery session.
-# Warm, personal, empowering. Never contains hard financial data in raw form.
-# Built out fully in Step 8 of the implementation plan.
+# Direct, personal, insight-led. Never contains hard financial data in raw form.
+# The Core Transition is the centrepiece — everything else hangs off it.
 
 report_title: "Your Titan LifeMap"
 subtitle: "A personal clarity report from Sustain Momentum"
 
 sections:
-  - id: welcome
-    title: "Your Discovery Session"
+  - id: core_transition
+    title: "Your Core Transition"
+    source_field: core_transition
     instruction: |
-      A short personal welcome. Acknowledge that they've just shared something significant.
-      One or two sentences - set the tone without being grandiose.
+      Their Core Transition phrase is shown directly above this section as the
+      centrepiece of the report — do not repeat it more than once. In 2-3 sentences,
+      name the shift they are actually moving through: what is ending, what is
+      beginning, and the tension that sits between the two. This is the single most
+      important paragraph in the report. Make it land with precision, not reassurance.
+
+  - id: welcome
+    title: "Where This Came From"
+    instruction: |
+      One short paragraph. Orient the reader: this report is built entirely from what
+      they said in their session, and its purpose is to show them a pattern they may
+      not have seen in themselves. No praise, no thanking them for sharing, no
+      "this takes courage." Set the tone in two or three plain sentences and move on.
 
   - id: future_vision
     title: "Where You're Heading"
     source_field: future_vision_statement
     instruction: |
-      Reflect their Future Vision Statement back to them in a way that makes it concrete
-      and real. Help them see what they articulated. 2-3 paragraphs.
+      Take their Future Vision Statement and make it concrete and specific. Then go one
+      step further than they did: name what that vision reveals about what they are
+      really optimising for. 2-3 paragraphs. Insight, not reflection.
 
   - id: personal_enough
     title: "What Enough Looks Like"
     source_field: personal_enough_statement
     instruction: |
-      Describe their Personal Enough Statement - the feeling they described, not a number.
-      This is often one of the most powerful sections. 1-2 paragraphs.
+      Describe the feeling they defined as "enough" — not a number. Then surface the gap
+      between that and what they are still driving toward, and what that gap is costing
+      them. This is often the sharpest section in the report. 1-2 paragraphs.
 
   - id: values
     title: "What Matters Most to You"
     source_field: top_five_values
     instruction: |
-      Present their Top Five Values and briefly connect each to what they shared
-      during the session. Not a list dump - weave it into a narrative.
+      Do not list their values back to them — they already know them. Instead, find the
+      pattern: which value is actually driving the others, where two of them pull against
+      each other, and what that tension explains about the decisions they find hard.
+      One tight narrative, not a values catalogue.
 
   - id: legacy
     title: "The Legacy You're Building"
     source_field: legacy_statement
     instruction: |
-      Bring their Legacy Statement to life. Connect it to their values and vision.
-      1-2 paragraphs.
+      Connect their Legacy Statement to the Core Transition and their values. Name what
+      kind of life this legacy quietly requires of them now — the choices it implies
+      before any money question enters the room. 1-2 paragraphs.
 
   - id: hwh_scorecard
     title: "Health, Wealth and Happiness"
     source_field: health_wealth_happiness_scorecard
     instruction: |
-      Present their Health-Wealth-Happiness Scorecard in a constructive way.
-      Where are they strong? Where is the biggest opportunity? Be honest but kind.
+      Present their Health-Wealth-Happiness picture honestly. Name the strongest area
+      plainly and move quickly to the real signal: where the biggest gap sits and why
+      it matters more than the strong scores. Be direct about the opportunity. Do not
+      soften it with praise.
 
   - id: clarity_score
     title: "Your Titan Clarity Score"
+    source_field: clarity_score
     instruction: |
-      Present the Clarity Score as a starting point, not a verdict. Explain briefly
-      what it measures and what the score tells them specifically. Encourage rather
-      than grade. Include the score prominently.
+      The exact Clarity Score is given to you in the source data and is displayed as a
+      figure directly in this section — DO NOT state the number in your prose, and do not
+      invent or round it. Explain in 1-2 paragraphs what the Clarity Score measures, and
+      interpret what their specific result says about where clarity is strong and where it
+      is still forming. Frame it as a starting point, not a grade.
 
   - id: momentum_plan
     title: "Your Titan Momentum Plan"
     source_field: momentum_plan
     instruction: |
-      Present the Momentum Plan actions as concrete next steps. Each should feel
-      specific to them, not generic. Number them 1-5.
+      The five Momentum Plan actions are listed in full directly below this text — DO NOT
+      repeat, number, or restate them. Write only a 2-3 sentence introduction that frames
+      why these specific actions, in this order, follow from what they revealed. Then let
+      the list speak for itself.
 
   - id: next_steps
     title: "What Happens Next"
     instruction: |
-      Brief explanation of the three routes: consumer self-service, coaching,
-      adviser introduction. Let them know these are options, not pressure.
-      Keep this warm and low-pressure.
+      Briefly lay out the three routes: sitting with the report themselves, working with
+      a coach, or an introduction to a financial adviser. Options, not pressure. Two short
+      paragraphs. Close on the Core Transition, not on a goodbye — leave them with the
+      shift they are making, not a warm sign-off.

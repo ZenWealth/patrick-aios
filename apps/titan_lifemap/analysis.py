@@ -91,6 +91,7 @@ BLOCK 1 — SCORES (for the client-facing reports and database):
 ```json
 {{
   "clarity_score": <float 0-100>,
+  "core_transition": "<short memorable phrase, e.g. 'From operator to mentor'>",
   "momentum_plan": [<up to 5 action strings>],
   "behavioural_friction_scores": {{
     "procrastination": <float 0-10>,
@@ -99,6 +100,14 @@ BLOCK 1 — SCORES (for the client-facing reports and database):
     "impulsiveness": <float 0-10>,
     "delegation": <float 0-10>,
     "lack_of_confidence": <float 0-10>
+  }},
+  "behavioural_friction_insights": {{
+    "procrastination": "<one insight sentence>",
+    "avoidance": "<one insight sentence>",
+    "overthinking": "<one insight sentence>",
+    "impulsiveness": "<one insight sentence>",
+    "delegation": "<one insight sentence>",
+    "lack_of_confidence": "<one insight sentence>"
   }}
 }}
 ```
@@ -181,18 +190,21 @@ def run_analysis(session_id: str) -> dict:
             clarity_score=float(scores["clarity_score"]),
             momentum_plan=scores["momentum_plan"],
             behavioural_friction_scores=scores["behavioural_friction_scores"],
+            core_transition=scores.get("core_transition"),
+            behavioural_friction_insights=scores.get("behavioural_friction_insights"),
         )
 
         # Store Internal AI Profile — no endpoint exposes this
         save_internal_profile(conn, session_id, internal_profile)
 
         logger.info(
-            "Analysis complete for session %s: clarity_score=%.1f",
-            session_id, scores["clarity_score"]
+            "Analysis complete for session %s: clarity_score=%.1f core_transition=%r",
+            session_id, scores["clarity_score"], scores.get("core_transition")
         )
 
         return {
             "clarity_score": scores["clarity_score"],
+            "core_transition": scores.get("core_transition"),
             "momentum_plan": scores["momentum_plan"],
             "behavioural_friction_scores": scores["behavioural_friction_scores"],
         }
