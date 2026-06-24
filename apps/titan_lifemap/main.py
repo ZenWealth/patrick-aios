@@ -45,7 +45,11 @@ app = FastAPI(
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["https://sustain-momentum.com", "https://www.sustain-momentum.com"],
+    allow_origins=[
+        "https://sustain-momentum.com",
+        "https://www.sustain-momentum.com",
+        "https://lifemap.sustain-momentum.com",
+    ],
     allow_credentials=True,
     allow_methods=["GET", "POST"],
     allow_headers=["*"],
