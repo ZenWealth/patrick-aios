@@ -31,7 +31,7 @@ from apps.titan_lifemap.db import (
 logger = logging.getLogger(__name__)
 
 MODEL = "claude-sonnet-4-6"
-MAX_TOKENS = 4096
+MAX_TOKENS = 8192  # room for the full scores block AND the internal profile block
 
 
 def _build_session_summary(session: dict, soft_facts: dict, hard_facts: dict) -> str:

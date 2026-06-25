@@ -301,10 +301,39 @@ def _capture_contact_if_present(
     if not email_match:
         return
 
-    # Extract first name: look for a name before or after the email
     email = email_match.group(0)
-    name_match = re.search(r'\b([A-Z][a-z]{1,20})\b', user_message)
-    first_name = name_match.group(1) if name_match else None
-
+    first_name = _extract_first_name(user_message, email)
     update_session(conn, session_id, email=email, first_name=first_name)
-    logger.info("Contact captured for session %s: %s", session_id, email)
+    logger.info("Contact captured for session %s: %s (name=%r)", session_id, email, first_name)
+
+
+# Capitalised words that are never a first name (avoids "My name is" → "My").
+_NAME_STOPWORDS = {
+    "My", "Me", "I", "Im", "Hi", "Hello", "Hey", "The", "Yes", "No", "Ok", "Okay",
+    "It", "Its", "This", "That", "Email", "Name", "Sure", "Thanks", "Thank", "And", "So",
+}
+
+
+def _extract_first_name(text: str, email: str) -> str | None:
+    """Best-effort first name. Prefer explicit cues; return None rather than guess wrong."""
+    # Explicit introductions — require a capitalised name so "i'm ready" doesn't match.
+    for pattern in (
+        r"[Mm]y name(?:'s| is)?\s+([A-Z][a-z]+)",
+        r"\bI(?:'m| am)\s+([A-Z][a-z]+)",
+        r"[Cc]all me\s+([A-Z][a-z]+)",
+        r"[Tt]his is\s+([A-Z][a-z]+)",
+    ):
+        m = re.search(pattern, text)
+        if m and m.group(1) not in _NAME_STOPWORDS:
+            return m.group(1)
+
+    # A capitalised name sitting right next to the email ("Sarah - sarah@x.com").
+    m = re.search(r"\b([A-Z][a-z]{1,20})\b[\s,\-–]*" + re.escape(email), text)
+    if m and m.group(1) not in _NAME_STOPWORDS:
+        return m.group(1)
+
+    # Fall back to an alphabetic email local part that looks like a name.
+    local = email.split("@")[0]
+    if local.isalpha() and 2 <= len(local) <= 20:
+        return local.capitalize()
+    return None
