@@ -66,6 +66,8 @@ CREATE TABLE IF NOT EXISTS titan_scores (
     clarity_components TEXT,
     core_transition TEXT,
     the_one_decision TEXT,
+    biggest_insight TEXT,
+    the_conversation TEXT,
     momentum_plan TEXT,
     behavioural_friction_scores TEXT,
     behavioural_friction_insights TEXT,
@@ -118,6 +120,10 @@ def init_db() -> sqlite3.Connection:
         conn.execute("ALTER TABLE titan_scores ADD COLUMN clarity_components TEXT")
     if "the_one_decision" not in score_cols:
         conn.execute("ALTER TABLE titan_scores ADD COLUMN the_one_decision TEXT")
+    if "biggest_insight" not in score_cols:
+        conn.execute("ALTER TABLE titan_scores ADD COLUMN biggest_insight TEXT")
+    if "the_conversation" not in score_cols:
+        conn.execute("ALTER TABLE titan_scores ADD COLUMN the_conversation TEXT")
     conn.commit()
     return conn
 
@@ -205,15 +211,17 @@ def save_scores(conn: sqlite3.Connection, session_id: str, clarity_score: float,
                  behavioural_friction_insights: dict | None = None,
                  friction_diagnosis: dict | None = None,
                  clarity_components: dict | None = None,
-                 the_one_decision: str | None = None) -> None:
+                 the_one_decision: str | None = None,
+                 biggest_insight: str | None = None,
+                 the_conversation: str | None = None) -> None:
     conn.execute(
         "INSERT OR REPLACE INTO titan_scores "
         "(session_id, clarity_score, clarity_components, core_transition, the_one_decision, "
-        "momentum_plan, behavioural_friction_scores, behavioural_friction_insights, "
-        "friction_diagnosis, updated_at) "
-        "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+        "biggest_insight, the_conversation, momentum_plan, behavioural_friction_scores, "
+        "behavioural_friction_insights, friction_diagnosis, updated_at) "
+        "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
         (session_id, clarity_score, json.dumps(clarity_components or {}), core_transition,
-         the_one_decision, json.dumps(momentum_plan),
+         the_one_decision, biggest_insight, the_conversation, json.dumps(momentum_plan),
          json.dumps(behavioural_friction_scores),
          json.dumps(behavioural_friction_insights or {}),
          json.dumps(friction_diagnosis or {}), _now())

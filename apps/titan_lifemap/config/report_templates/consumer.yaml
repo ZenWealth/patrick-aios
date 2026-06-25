@@ -95,8 +95,16 @@ sections:
     source_field: the_one_decision
     instruction: |
       The decision itself is displayed directly in this section. Write at most ONE short
-      sentence of lead-in — do not restate or expand the decision. This is the line they
-      should remember in six months; let it stand on its own.
+      sentence of lead-in — do not restate or expand the decision. This is the single change
+      with the most leverage; let it stand on its own.
+
+  - id: biggest_insight
+    title: "The Biggest Insight"
+    source_field: biggest_insight
+    instruction: |
+      The insight itself is displayed directly in this section. Write at most ONE short
+      sentence of lead-in — do not restate or expand it. This is the one thing they should
+      remember in six months; let it stand on its own.
 
   - id: momentum_plan
     title: "Your Titan Momentum Plan"
@@ -110,7 +118,9 @@ sections:
   - id: next_steps
     title: "What Happens Next"
     instruction: |
-      Briefly lay out the three routes: sitting with the report themselves, working with
-      a coach, or an introduction to a financial adviser. Options, not pressure. Two short
-      paragraphs. Close on the Core Transition, not on a goodbye — leave them with the
-      shift they are making, not a warm sign-off.
+      Open with this idea, in your own words: this report is not the end of the process —
+      it is the beginning of a different conversation; discovery creates awareness, and
+      progress comes from acting on what has become visible. Then briefly lay out the three
+      routes: sitting with the report themselves, working with a coach, or an introduction
+      to a financial adviser. Options, not pressure; calm and non-salesy. Close on the Core
+      Transition, not a goodbye.

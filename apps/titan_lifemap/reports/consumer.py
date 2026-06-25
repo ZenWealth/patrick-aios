@@ -38,6 +38,8 @@ def build(session_id: str, as_pdf: bool = True) -> bytes | str:
                 "clarity_components": json.loads(_col("clarity_components") or "{}"),
                 "core_transition": _col("core_transition"),
                 "the_one_decision": _col("the_one_decision"),
+                "biggest_insight": _col("biggest_insight"),
+                "the_conversation": _col("the_conversation"),
                 "momentum_plan": json.loads(score_row["momentum_plan"] or "[]"),
                 "behavioural_friction_scores": json.loads(
                     score_row["behavioural_friction_scores"] or "{}"

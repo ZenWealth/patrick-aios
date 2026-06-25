@@ -99,7 +99,9 @@ BLOCK 1 — SCORES (for the client-facing reports and database):
   }},
   "core_transition": "<short memorable phrase, e.g. 'From operator to mentor'>",
   "the_one_decision": "<one short paragraph — the single highest-impact change>",
-  "momentum_plan": [<up to 5 action strings>],
+  "biggest_insight": "<the one thing to remember in 6 months — max 150 words, 2nd person>",
+  "the_conversation": "<the single conversation they most need to have, and why — under 120 words, 2nd person>",
+  "momentum_plan": [<up to 5 behavioural experiment strings>],
   "behavioural_friction_scores": {{
     "procrastination": <float 0-10>,
     "avoidance": <float 0-10>,
@@ -223,6 +225,8 @@ def run_analysis(session_id: str) -> dict:
             behavioural_friction_scores=scores["behavioural_friction_scores"],
             core_transition=scores.get("core_transition"),
             the_one_decision=scores.get("the_one_decision"),
+            biggest_insight=scores.get("biggest_insight"),
+            the_conversation=scores.get("the_conversation"),
             behavioural_friction_insights=scores.get("behavioural_friction_insights"),
             friction_diagnosis=scores.get("friction_diagnosis"),
         )

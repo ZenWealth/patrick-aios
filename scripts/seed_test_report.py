@@ -55,12 +55,32 @@ SOFT_FACTS = dict(
 )
 
 MOMENTUM_PLAN = [
-    "Define 'enough' as a specific number with your adviser, then stop moving it.",
-    "Hand one strategic decision per quarter fully to your leadership team and do not review it.",
-    "Book the health screening you keep deferring — this quarter, not 'soon'.",
-    "Write the one-page letter to your children about judgement over money.",
-    "Schedule the first winter writing block now, before the calendar fills.",
+    "Decide what 'enough' looks like once — then notice every future moment when uncertainty tempts you to move that line, and don't.",
+    "Choose one meaningful decision to hand over completely, and resist the urge to review or reclaim it.",
+    "For one week, treat your own health as the single appointment you are not allowed to move.",
+    "Before the calendar fills, block the first stretch of the life you keep describing — and defend it like a commitment to someone else.",
+    "When you catch yourself making yourself necessary, pause and ask whether you are protecting the work or protecting your place in it.",
 ]
+
+BIGGEST_INSIGHT = (
+    "You have spent a career proving you can carry everything — and it worked, which is "
+    "exactly the problem. The instinct that built all of this, the reflex to be the one "
+    "everything runs through, is now the single thing standing between you and the life you "
+    "described. You do not need more security, more capability, or more time. You need to let "
+    "what you built prove it can hold without your hands on it. The freedom you are working "
+    "toward is not something you reach by doing more — it is something you reach the moment "
+    "you are willing to do less, and discover that nothing falls down."
+)
+
+THE_CONVERSATION = (
+    "Have one honest conversation with the people who depend on you — not about money, but "
+    "about what your stepping back would actually look and feel like. You have been carrying "
+    "the assumption that you are needed at the centre, and you have never tested it out loud. "
+    "Ask them what they would notice if you did less, and listen for whether their answer "
+    "matches the indispensability you have built around yourself. It is the conversation that "
+    "turns this from a private tension into a shared design — and the fastest way to find out "
+    "whether the wall you think is load-bearing actually is."
+)
 
 FRICTION_SCORES = {
     "procrastination": 4.0, "avoidance": 6.0, "overthinking": 8.0,
@@ -137,7 +157,9 @@ def seed():
                 behavioural_friction_insights=FRICTION_INSIGHTS,
                 friction_diagnosis=FRICTION_DIAGNOSIS,
                 clarity_components=CLARITY_COMPONENTS,
-                the_one_decision=THE_ONE_DECISION)
+                the_one_decision=THE_ONE_DECISION,
+                biggest_insight=BIGGEST_INSIGHT,
+                the_conversation=THE_CONVERSATION)
     conn.close()
     print("Seeded:", SID, "| report type:", REPORT_TYPE)
 
