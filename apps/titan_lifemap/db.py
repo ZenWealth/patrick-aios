@@ -63,7 +63,9 @@ CREATE TABLE IF NOT EXISTS titan_hard_facts (
 CREATE TABLE IF NOT EXISTS titan_scores (
     session_id TEXT PRIMARY KEY,
     clarity_score REAL,
+    clarity_components TEXT,
     core_transition TEXT,
+    the_one_decision TEXT,
     momentum_plan TEXT,
     behavioural_friction_scores TEXT,
     behavioural_friction_insights TEXT,
@@ -112,6 +114,10 @@ def init_db() -> sqlite3.Connection:
         conn.execute("ALTER TABLE titan_scores ADD COLUMN behavioural_friction_insights TEXT")
     if "friction_diagnosis" not in score_cols:
         conn.execute("ALTER TABLE titan_scores ADD COLUMN friction_diagnosis TEXT")
+    if "clarity_components" not in score_cols:
+        conn.execute("ALTER TABLE titan_scores ADD COLUMN clarity_components TEXT")
+    if "the_one_decision" not in score_cols:
+        conn.execute("ALTER TABLE titan_scores ADD COLUMN the_one_decision TEXT")
     conn.commit()
     return conn
 
@@ -197,14 +203,17 @@ def save_scores(conn: sqlite3.Connection, session_id: str, clarity_score: float,
                  momentum_plan: list, behavioural_friction_scores: dict,
                  core_transition: str | None = None,
                  behavioural_friction_insights: dict | None = None,
-                 friction_diagnosis: dict | None = None) -> None:
+                 friction_diagnosis: dict | None = None,
+                 clarity_components: dict | None = None,
+                 the_one_decision: str | None = None) -> None:
     conn.execute(
         "INSERT OR REPLACE INTO titan_scores "
-        "(session_id, clarity_score, core_transition, momentum_plan, "
-        "behavioural_friction_scores, behavioural_friction_insights, "
+        "(session_id, clarity_score, clarity_components, core_transition, the_one_decision, "
+        "momentum_plan, behavioural_friction_scores, behavioural_friction_insights, "
         "friction_diagnosis, updated_at) "
-        "VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
-        (session_id, clarity_score, core_transition, json.dumps(momentum_plan),
+        "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+        (session_id, clarity_score, json.dumps(clarity_components or {}), core_transition,
+         the_one_decision, json.dumps(momentum_plan),
          json.dumps(behavioural_friction_scores),
          json.dumps(behavioural_friction_insights or {}),
          json.dumps(friction_diagnosis or {}), _now())

@@ -129,6 +129,82 @@
       margin-bottom: 0.15em;
     }
 
+    .friction-block {
+      margin: 0 0 0.9em 0;
+      padding-left: 0.9em;
+      border-left: 3px solid #283566;
+      page-break-inside: avoid;
+    }
+
+    .friction-name {
+      font-size: 12pt;
+      font-weight: bold;
+      color: #283566;
+      margin: 0 0 0.3em 0;
+    }
+
+    .friction-rank {
+      display: inline-block;
+      font-size: 8pt;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: #BFA046;
+      font-weight: bold;
+      margin-right: 0.5em;
+    }
+
+    .friction-detail {
+      font-size: 10.5pt;
+      margin: 0 0 0.25em 0;
+      line-height: 1.5;
+    }
+
+    .friction-detail strong { color: #283566; }
+
+    .clarity-grid {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 0.2em 0 1.1em 0;
+    }
+
+    .clarity-grid td { padding: 0.28em 0; vertical-align: middle; }
+
+    .clarity-name {
+      font-size: 9.5pt;
+      font-weight: bold;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: #283566;
+      width: 34%;
+    }
+
+    .clarity-bar-cell { width: 52%; padding-left: 0.8em; padding-right: 0.8em; }
+    .clarity-bar-track { height: 9px; background: #e8edf5; border-radius: 5px; }
+    .clarity-bar-fill { height: 9px; background: #283566; border-radius: 5px; }
+
+    .clarity-val {
+      text-align: right;
+      font-size: 10.5pt;
+      font-weight: bold;
+      color: #283566;
+      width: 14%;
+    }
+
+    .clarity-total td { border-top: 1.5px solid #283566; padding-top: 0.5em; }
+    .clarity-total .clarity-name { color: #BFA046; }
+    .clarity-total .clarity-val { font-size: 14pt; }
+
+    .one-decision {
+      background: #283566;
+      color: #fff;
+      padding: 1.3em 1.5em;
+      border-radius: 4px;
+      font-size: 12pt;
+      line-height: 1.55;
+      margin: 0.3em 0 0.5em 0;
+      page-break-inside: avoid;
+    }
+
     .section-content {
       font-size: 11pt;
       line-height: 1.65;
@@ -235,15 +311,36 @@
 
   {% for section in sections %}
   {% set content = section_content.get(section.id, '') %}
-  {% if content %}
+  {% if content
+        or (section.id == 'the_one_decision' and scores.the_one_decision)
+        or (section.id == 'friction_diagnosis' and scores.friction_diagnosis)
+        or (section.id == 'clarity_score' and scores.clarity_components) %}
   <div class="section">
     <h2 class="section-title">{{ section.title }}</h2>
     <div class="section-content">
-      {% if section.id == 'clarity_score' and scores.clarity_score %}
-      <div class="score-box">
-        <span class="score-number">{{ "%.0f"|format(scores.clarity_score) }}</span>
-        <span class="score-label"> / 100 — Titan Clarity Score</span>
-      </div>
+      {% if section.id == 'clarity_score' and scores.clarity_components %}
+      {% set comp = scores.clarity_components %}
+      {% set rows = [
+        ('Vision', comp.get('vision') or 0),
+        ('Values', comp.get('values') or 0),
+        ('Execution', comp.get('execution') or 0),
+        ('Health Alignment', comp.get('health_alignment') or 0),
+        ('Legacy Clarity', comp.get('legacy_clarity') or 0)
+      ] %}
+      <table class="clarity-grid">
+        {% for name, val in rows %}
+        <tr>
+          <td class="clarity-name">{{ name }}</td>
+          <td class="clarity-bar-cell"><div class="clarity-bar-track"><div class="clarity-bar-fill" style="width: {{ val|round|int }}%"></div></div></td>
+          <td class="clarity-val">{{ val|round|int }}</td>
+        </tr>
+        {% endfor %}
+        <tr class="clarity-total">
+          <td class="clarity-name">Titan Clarity Score</td>
+          <td class="clarity-bar-cell"></td>
+          <td class="clarity-val">{{ scores.clarity_score|round|int }}</td>
+        </tr>
+      </table>
       {% endif %}
 
       {% for paragraph in content.split('\n\n') %}
@@ -268,30 +365,27 @@
         <p class="friction-callout-line">{{ fd.holding_you_back }}</p>
       </div>
       {% endif %}
-      {% if fd.primary_friction and fd.primary_friction.name %}
+      {% set p = fd.primary_friction %}
+      {% if p and p.name %}
+      <div class="friction-block">
+        <p class="friction-name"><span class="friction-rank">Primary friction</span> {{ p.name }}</p>
+        {% if p.what %}<p class="friction-detail"><strong>What it is:</strong> {{ p.what }}</p>{% endif %}
+        {% if p.how %}<p class="friction-detail"><strong>How it shows up:</strong> {{ p.how }}</p>{% endif %}
+        {% if p.cost %}<p class="friction-detail"><strong>What it costs you:</strong> {{ p.cost }}</p>{% endif %}
+      </div>
+      {% endif %}
+      {% for s in fd.secondary_frictions or [] %}
+      {% if s.name %}
       <p class="friction-line">
-        <span class="friction-tag">Primary friction</span>
-        <strong>{{ fd.primary_friction.name }}.</strong> {{ fd.primary_friction.how_it_shows_up }}
+        <span class="friction-tag">Secondary friction</span>
+        <strong>{{ s.name }}.</strong> {{ s.how or s.what }}{% if s.cost %} <em>Costing you:</em> {{ s.cost }}{% endif %}
       </p>
       {% endif %}
-      {% if fd.secondary_frictions %}
-      <p class="friction-line">
-        <span class="friction-tag">Also at play</span>
-        {% for s in fd.secondary_frictions %}<strong>{{ s.name }}</strong>{% if s.note %} — {{ s.note }}{% endif %}{% if not loop.last %}; {% endif %}{% endfor %}.
-      </p>
+      {% endfor %}
       {% endif %}
-      {% if fd.cost %}
-      <p class="friction-line">
-        <span class="friction-tag">What it's costing you</span>
-        {{ fd.cost }}
-      </p>
-      {% endif %}
-      {% if fd.behavioural_shift %}
-      <p class="friction-line">
-        <span class="friction-tag">The shift required</span>
-        {{ fd.behavioural_shift }}
-      </p>
-      {% endif %}
+
+      {% if section.id == 'the_one_decision' and scores.the_one_decision %}
+      <div class="one-decision">{{ scores.the_one_decision }}</div>
       {% endif %}
     </div>
   </div>

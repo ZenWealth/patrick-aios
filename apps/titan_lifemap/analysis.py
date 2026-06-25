@@ -90,8 +90,15 @@ Return your response as two clearly separated JSON blocks:
 BLOCK 1 — SCORES (for the client-facing reports and database):
 ```json
 {{
-  "clarity_score": <float 0-100>,
+  "clarity_components": {{
+    "vision": <0-100>,
+    "values": <0-100>,
+    "execution": <0-100>,
+    "health_alignment": <0-100>,
+    "legacy_clarity": <0-100>
+  }},
   "core_transition": "<short memorable phrase, e.g. 'From operator to mentor'>",
+  "the_one_decision": "<one short paragraph — the single highest-impact change>",
   "momentum_plan": [<up to 5 action strings>],
   "behavioural_friction_scores": {{
     "procrastination": <float 0-10>,
@@ -110,10 +117,8 @@ BLOCK 1 — SCORES (for the client-facing reports and database):
     "lack_of_confidence": "<one insight sentence>"
   }},
   "friction_diagnosis": {{
-    "primary_friction": {{"name": "<named pattern>", "how_it_shows_up": "<1-2 sentences>"}},
-    "secondary_frictions": [{{"name": "<named>", "note": "<short note>"}}],
-    "cost": "<what these frictions concretely cost them>",
-    "behavioural_shift": "From <old behaviour> to <new behaviour>",
+    "primary_friction": {{"name": "<named pattern>", "what": "<phrase>", "how": "<how it appears for them>", "cost": "<what it costs them>"}},
+    "secondary_frictions": [{{"name": "<named>", "what": "<phrase>", "how": "<how it appears>", "cost": "<what it costs>"}}],
     "holding_you_back": "<one sentence answering 'what is actually holding me back?'>"
   }}
 }}
@@ -139,6 +144,17 @@ def _parse_scores(response_text: str) -> dict:
     if not blocks:
         raise ValueError("No JSON blocks found in analysis response")
     return json.loads(blocks[0])
+
+
+def _mean(values) -> float | None:
+    """Mean of the numeric values, rounded to 1dp. None if there are none."""
+    nums = []
+    for v in values:
+        try:
+            nums.append(float(v))
+        except (TypeError, ValueError):
+            pass
+    return round(sum(nums) / len(nums), 1) if nums else None
 
 
 def _parse_internal_profile(response_text: str) -> dict:
@@ -191,13 +207,22 @@ def run_analysis(session_id: str) -> dict:
         scores = _parse_scores(response_text)
         internal_profile = _parse_internal_profile(response_text)
 
+        # Titan Clarity Score is the average of the five components (traceable). Fall
+        # back to any directly-supplied clarity_score only if components are missing.
+        components = scores.get("clarity_components") or {}
+        clarity_score = _mean(components.values())
+        if clarity_score is None:
+            clarity_score = float(scores.get("clarity_score") or 0.0)
+
         save_scores(
             conn,
             session_id,
-            clarity_score=float(scores["clarity_score"]),
+            clarity_score=clarity_score,
+            clarity_components=components,
             momentum_plan=scores["momentum_plan"],
             behavioural_friction_scores=scores["behavioural_friction_scores"],
             core_transition=scores.get("core_transition"),
+            the_one_decision=scores.get("the_one_decision"),
             behavioural_friction_insights=scores.get("behavioural_friction_insights"),
             friction_diagnosis=scores.get("friction_diagnosis"),
         )
@@ -209,12 +234,14 @@ def run_analysis(session_id: str) -> dict:
         primary = (diag.get("primary_friction") or {}).get("name")
         logger.info(
             "Analysis complete for session %s: clarity_score=%.1f core_transition=%r primary_friction=%r",
-            session_id, scores["clarity_score"], scores.get("core_transition"), primary
+            session_id, clarity_score, scores.get("core_transition"), primary
         )
 
         return {
-            "clarity_score": scores["clarity_score"],
+            "clarity_score": clarity_score,
+            "clarity_components": components,
             "core_transition": scores.get("core_transition"),
+            "the_one_decision": scores.get("the_one_decision"),
             "momentum_plan": scores["momentum_plan"],
             "behavioural_friction_scores": scores["behavioural_friction_scores"],
             "friction_diagnosis": scores.get("friction_diagnosis"),

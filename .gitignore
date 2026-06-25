@@ -40,3 +40,6 @@ data/*.log
 
 # --- Node (if applicable) ---
 node_modules/
+
+# Local report artifacts pulled for review (may contain client data)
+lifemap-*.pdf

@@ -78,17 +78,37 @@ FRICTION_INSIGHTS = {
 
 FRICTION_DIAGNOSIS = {
     "primary_friction": {
-        "name": "Identity attachment",
-        "how_it_shows_up": "His sense of who he is is bound up with being the one everything runs through. Stepping back doesn't feel like freedom — it feels like disappearing, so he keeps making himself necessary.",
+        "name": "Identity Attachment",
+        "what": "His sense of self is bound to being the one everything runs through.",
+        "how": "He keeps making himself necessary — holding the strategic decisions he could hand over — because stepping back feels less like freedom than like disappearing.",
+        "cost": "It defers the winters-writing life he has already described and keeps him on a finish line he quietly keeps moving.",
     },
     "secondary_frictions": [
-        {"name": "Over-responsibility", "note": "hoards strategic decisions he could hand over"},
-        {"name": "Avoidance", "note": "defers the one risk he can't delegate — his health"},
+        {"name": "Over-responsibility",
+         "what": "Carries decisions that are no longer his to carry.",
+         "how": "Reviews what he has delegated; little stays fully handed over.",
+         "cost": "Caps the freedom the whole plan is meant to buy."},
+        {"name": "Avoidance",
+         "what": "Sidesteps the one risk he cannot delegate.",
+         "how": "Has been postponing the health question while optimising everything else.",
+         "cost": "The unhedged health risk compounds in the background."},
     ],
-    "cost": "It keeps him running toward a finish line he quietly keeps moving, deferring the winters-writing life he has already described — while the unhedged health risk compounds in the background.",
-    "behavioural_shift": "From being the person everything depends on, to building things that no longer depend on him.",
     "holding_you_back": "What's holding you back isn't money — it's that stepping back still feels like disappearing, so you keep making yourself indispensable.",
 }
+
+CLARITY_COMPONENTS = {
+    "vision": 82,
+    "values": 78,
+    "execution": 58,
+    "health_alignment": 54,
+    "legacy_clarity": 80,
+}
+
+THE_ONE_DECISION = (
+    "Hand over one strategic decision completely — and do not review it — so the thing you "
+    "built can prove it runs without you. Almost everything else you want depends on first "
+    "believing that it can."
+)
 
 
 def seed():
@@ -111,11 +131,13 @@ def seed():
     conn.close()
 
     conn = get_connection()
-    save_scores(conn, SID, clarity_score=72.0, momentum_plan=MOMENTUM_PLAN,
+    save_scores(conn, SID, clarity_score=70.4, momentum_plan=MOMENTUM_PLAN,
                 behavioural_friction_scores=FRICTION_SCORES,
                 core_transition="From building to entrusting",
                 behavioural_friction_insights=FRICTION_INSIGHTS,
-                friction_diagnosis=FRICTION_DIAGNOSIS)
+                friction_diagnosis=FRICTION_DIAGNOSIS,
+                clarity_components=CLARITY_COMPONENTS,
+                the_one_decision=THE_ONE_DECISION)
     conn.close()
     print("Seeded:", SID, "| report type:", REPORT_TYPE)
 

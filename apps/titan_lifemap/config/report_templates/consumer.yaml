@@ -30,19 +30,19 @@ sections:
     title: "What's Holding You Back"
     source_field: friction_diagnosis
     instruction: |
-      The structured diagnosis — the one-line answer, your primary and secondary frictions,
-      their cost, and the shift required — is displayed directly in this section. Write only
-      a 1-2 sentence lead-in that frames why naming the friction plainly matters more than
-      another theme. Do NOT restate the named frictions, the cost, or the shift — they are
-      shown below your text. Set it up, then let the diagnosis land.
+      The structured diagnosis — the one-line answer plus your primary and secondary
+      frictions, each with what it is, how it shows up, and what it costs — is displayed
+      directly in this section. Write only a 1-2 sentence lead-in framing why naming the
+      friction plainly matters more than another theme. Do NOT restate the named frictions
+      or their costs — they are shown below your text. Set it up, then let the diagnosis land.
 
   - id: future_vision
     title: "Where You're Heading"
     source_field: future_vision_statement
     instruction: |
-      Take their Future Vision Statement and make it concrete and specific. Then go one
-      step further than they did: name what that vision reveals about what they are
-      really optimising for. 2-3 paragraphs. Insight, not reflection.
+      Go one step further than they did: name what their vision reveals about what they
+      are really optimising for. At most 2 tight paragraphs. Insight, not reflection;
+      evidence-based, no invented specifics.
 
   - id: personal_enough
     title: "What Enough Looks Like"
@@ -73,20 +73,30 @@ sections:
     title: "Health, Wealth and Happiness"
     source_field: health_wealth_happiness_scorecard
     instruction: |
-      Present their Health-Wealth-Happiness picture honestly. Name the strongest area
-      plainly and move quickly to the real signal: where the biggest gap sits and why
-      it matters more than the strong scores. Be direct about the opportunity. Do not
-      soften it with praise.
+      Do not give three separate observations. Deliver ONE central insight: name which
+      pillar is strongest, which is weakest, and — the real point — which pillar is
+      constraining the other two. One tight diagnostic paragraph. Evidence-based, no
+      invented specifics. Direct, not softened with praise.
 
   - id: clarity_score
     title: "Your Titan Clarity Score"
-    source_field: clarity_score
+    source_field: clarity_components
     instruction: |
-      The exact Clarity Score is given to you in the source data and is displayed as a
-      figure directly in this section — DO NOT state the number in your prose, and do not
-      invent or round it. Explain in 1-2 paragraphs what the Clarity Score measures, and
-      interpret what their specific result says about where clarity is strong and where it
-      is still forming. Frame it as a starting point, not a grade.
+      The five components (Vision, Values, Execution, Health Alignment, Legacy Clarity)
+      and the overall Titan Clarity Score are displayed directly in this section as figures
+      — DO NOT state any of the numbers in your prose, and do not invent or round them. In
+      1-2 short paragraphs, interpret the SHAPE of the scores: which dimension is carrying
+      them and which is dragging the total down, and what that pattern means. Make it
+      traceable — they should understand why the total is what it is. A starting point,
+      not a grade.
+
+  - id: the_one_decision
+    title: "The One Decision That Matters Most"
+    source_field: the_one_decision
+    instruction: |
+      The decision itself is displayed directly in this section. Write at most ONE short
+      sentence of lead-in — do not restate or expand the decision. This is the line they
+      should remember in six months; let it stand on its own.
 
   - id: momentum_plan
     title: "Your Titan Momentum Plan"

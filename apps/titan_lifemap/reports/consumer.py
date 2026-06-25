@@ -29,16 +29,20 @@ def build(session_id: str, as_pdf: bool = True) -> bytes | str:
         scores = {}
         if score_row:
             score_keys = score_row.keys()
+
+            def _col(name, default=None):
+                return score_row[name] if name in score_keys else default
+
             scores = {
                 "clarity_score": score_row["clarity_score"],
-                "core_transition": score_row["core_transition"] if "core_transition" in score_keys else None,
+                "clarity_components": json.loads(_col("clarity_components") or "{}"),
+                "core_transition": _col("core_transition"),
+                "the_one_decision": _col("the_one_decision"),
                 "momentum_plan": json.loads(score_row["momentum_plan"] or "[]"),
                 "behavioural_friction_scores": json.loads(
                     score_row["behavioural_friction_scores"] or "{}"
                 ),
-                "friction_diagnosis": json.loads(
-                    score_row["friction_diagnosis"] or "{}"
-                ) if "friction_diagnosis" in score_keys else {},
+                "friction_diagnosis": json.loads(_col("friction_diagnosis") or "{}"),
             }
 
         session_data = {
