@@ -53,7 +53,6 @@
 
     .section {
       margin-bottom: 2em;
-      page-break-inside: avoid;
     }
 
     .section-title {
@@ -381,11 +380,13 @@
       </table>
       {% endif %}
 
+      {% if section.id != 'biggest_insight' %}
       {% for paragraph in content.split('\n\n') %}
       {% if paragraph.strip() %}
       <p>{{ paragraph.strip() }}</p>
       {% endif %}
       {% endfor %}
+      {% endif %}
 
       {% if section.id == 'momentum_plan' and scores.momentum_plan %}
       <ul class="momentum-list">
