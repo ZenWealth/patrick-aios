@@ -57,7 +57,7 @@ SOFT_FACTS = dict(
 MOMENTUM_PLAN = [
     "Define 'enough' as a specific number with your adviser, then stop moving it.",
     "Hand one strategic decision per quarter fully to your leadership team and do not review it.",
-    "Book the health screening you have deferred for two years — this quarter.",
+    "Book the health screening you keep deferring — this quarter, not 'soon'.",
     "Write the one-page letter to your children about judgement over money.",
     "Schedule the first winter writing block now, before the calendar fills.",
 ]
@@ -79,18 +79,18 @@ FRICTION_INSIGHTS = {
 FRICTION_DIAGNOSIS = {
     "primary_friction": {
         "name": "Identity Attachment",
-        "what": "His sense of self is bound to being the one everything runs through.",
-        "how": "He keeps making himself necessary — holding the strategic decisions he could hand over — because stepping back feels less like freedom than like disappearing.",
-        "cost": "It defers the winters-writing life he has already described and keeps him on a finish line he quietly keeps moving.",
+        "what": "Your sense of self is bound to being the one everything runs through.",
+        "how": "You keep making yourself necessary — holding the strategic decisions you could hand over — because stepping back feels less like freedom than like disappearing.",
+        "cost": "It defers the winters-writing life you have already described and keeps you on a finish line you quietly keep moving.",
     },
     "secondary_frictions": [
         {"name": "Over-responsibility",
-         "what": "Carries decisions that are no longer his to carry.",
-         "how": "Reviews what he has delegated; little stays fully handed over.",
-         "cost": "Caps the freedom the whole plan is meant to buy."},
+         "what": "You carry decisions that are no longer yours to carry.",
+         "how": "You review what you have delegated; little stays fully handed over.",
+         "cost": "It caps the freedom the whole plan is meant to buy."},
         {"name": "Avoidance",
-         "what": "Sidesteps the one risk he cannot delegate.",
-         "how": "Has been postponing the health question while optimising everything else.",
+         "what": "You sidestep the one risk you cannot delegate.",
+         "how": "You keep postponing the health question while optimising everything else.",
          "cost": "The unhedged health risk compounds in the background."},
     ],
     "holding_you_back": "What's holding you back isn't money — it's that stepping back still feels like disappearing, so you keep making yourself indispensable.",

@@ -72,6 +72,10 @@ system_prompt: |
   BEHAVIOURAL FRICTION DIAGNOSIS
   The heart of the report. NAME the frictions; do not merely describe behaviour.
 
+  VOICE: every field of friction_diagnosis and the_one_decision is shown to the client
+  verbatim. Write them in the SECOND PERSON, addressed directly to the client ("you",
+  "your") — never "he/she/they/the client".
+
   PRIMARY FRICTION — the single biggest pattern getting in this person's way. Name it
   precisely. Prefer one of: Identity Attachment, Hesitation, Over-responsibility,
   Perfectionism, Reassurance Seeking, Fear of Regret, Avoidance, Opportunity Attraction,
