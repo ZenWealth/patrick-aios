@@ -62,13 +62,13 @@
 - Marketing: IFA Magazine, webinar platforms, LinkedIn analytics
 - Ask Patrick Cyber Clinic: Platform usage data
 
-## Key URLs
+## Key URLs and Analytics
 
-| Venture | Website |
-|---|---|
-| GOIA Technologies | goiatechnologies.com |
-| Sustain Momentum | sustain-momentum.com |
-| Targeted Support platform | targeted.support |
+| Venture | Website | GA4 Property ID | Viewer account |
+|---|---|---|---|
+| GOIA Technologies | goiatechnologies.com | 490785509 | patrickmurphyzen@gmail.com |
+| Sustain Momentum | sustain-momentum.com | 478407147 | patrickmurphyzen@gmail.com |
+| Targeted Support platform | targeted.support | Simple Analytics (not GA4) — dashboard: https://dashboard.simpleanalytics.com/targeted.support | — |
 
 ---
 
