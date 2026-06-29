@@ -59,8 +59,8 @@ sections:
     source_field: future_vision_statement
     instruction: |
       Go one step further than they did: name what their vision reveals about what they
-      are really optimising for. At most 2 tight paragraphs. Insight, not reflection;
-      evidence-based, no invented specifics.
+      are really optimising for. At most one short paragraph (4-5 sentences). Insight, not
+      reflection; evidence-based, no invented specifics.
 
   - id: personal_enough
     title: "What Enough Looks Like"
@@ -68,7 +68,7 @@ sections:
     instruction: |
       Describe the feeling they defined as "enough" — not a number. Then surface the gap
       between that and what they are still driving toward, and what that gap is costing
-      them. This is often the sharpest section in the report. 1-2 paragraphs.
+      them. This is often the sharpest section in the report. One short paragraph (4-5 sentences).
 
   - id: values
     title: "What Matters Most to You"
@@ -77,7 +77,7 @@ sections:
       Do not list their values back to them — they already know them. Instead, find the
       pattern: which value is actually driving the others, where two of them pull against
       each other, and what that tension explains about the decisions they find hard.
-      One tight narrative, not a values catalogue.
+      One tight narrative of 4-5 sentences, not a values catalogue.
 
   - id: legacy
     title: "The Legacy You're Building"
@@ -85,7 +85,7 @@ sections:
     instruction: |
       Connect their Legacy Statement to the Core Transition and their values. Name what
       kind of life this legacy quietly requires of them now — the choices it implies
-      before any money question enters the room. 1-2 paragraphs.
+      before any money question enters the room. One short paragraph (4-5 sentences).
 
   - id: hwh_scorecard
     title: "Health, Wealth and Happiness"
@@ -93,8 +93,8 @@ sections:
     instruction: |
       Do not give three separate observations. Deliver ONE central insight: name which
       pillar is strongest, which is weakest, and — the real point — which pillar is
-      constraining the other two. One tight diagnostic paragraph. Evidence-based, no
-      invented specifics. Direct, not softened with praise.
+      constraining the other two. One tight diagnostic paragraph, 4-5 sentences maximum.
+      Evidence-based, no invented specifics. Direct, not softened with praise.
 
   - id: clarity_score
     title: "Your Titan Clarity Score"
@@ -103,7 +103,7 @@ sections:
       The five components (Vision, Values, Execution, Health Alignment, Legacy Clarity)
       and the overall Titan Clarity Score are displayed directly in this section as figures
       — DO NOT state any of the numbers in your prose, and do not invent or round them. In
-      1-2 short paragraphs, interpret the SHAPE of the scores: which dimension is carrying
+      one short paragraph, interpret the SHAPE of the scores: which dimension is carrying
       them and which is dragging the total down, and what that pattern means. Make it
       traceable — they should understand why the total is what it is. A starting point,
       not a grade.
@@ -119,13 +119,14 @@ sections:
   - id: whats_possible
     title: "It's Genuinely Possible"
     instruction: |
-      Beat 5 — restore hope and build trust in their OWN judgement, grounded and never
-      cheerleading. Using only what they have shown, name the real evidence that the change
-      is within reach: strengths they already have, hard things they have already done, how
-      much closer they may be than they feel. Reflect their own good judgement back to them —
-      they have understood more than they give themselves credit for. They should leave
-      trusting themselves more, not this report more. 1-2 paragraphs. Evidence, not
-      reassurance; no flattery.
+      Beat 5 — restore hope and build trust in their OWN judgement, strictly from the evidence
+      in their own answers. Point ONLY to specific things they actually said or did in this
+      session (e.g. the 'enough' they defined, the value they prioritised, a decision they have
+      already made well), phrased as plain observation — not as affirmation of the person. Do
+      NOT use ungrounded or comparative praise: no "you've done harder things before", no "most
+      people can't do this", no "that's not a small thing". If it is not concretely evidenced in
+      their answers, cut it. They should leave trusting their own judgement more because you
+      showed them their own evidence — not because you praised them. One short paragraph.
 
   - id: the_one_decision
     title: "The One Decision That Matters Most"

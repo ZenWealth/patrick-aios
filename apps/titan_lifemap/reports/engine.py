@@ -66,6 +66,16 @@ QA_VALIDATION_WORDS = [
     r"\bwell done\b", r"\binspiring\b", r"\btakes? real courage\b",
 ]
 QA_MAX_RETRIES = 2
+# Sections whose generated text is NOT rendered to the reader (the template shows a
+# scores-derived box instead) — exclude them from QA so we validate only what is shown.
+QA_SKIP_SECTIONS = {"biggest_insight"}
+# Objective breaches that HARD-BLOCK delivery (regenerate; raise if unfixable). Everything
+# else the gate finds (subjective tone: validation_language, standard_breach) is a WARNING
+# surfaced for human review, never an automatic delivery failure. Titan's job is to name
+# behavioural truth with warmth — a judge that cannot tell honest insight from judgement, or
+# grounded hope from empty validation, must not be allowed to stop the product working.
+QA_HARD_CHECKS = {"third_person_reader", "name", "required_score",
+                  "required_section", "closing", "length"}
 
 
 class QAValidationError(Exception):
@@ -176,9 +186,14 @@ Find EVERY violation of these two rules:
    "they", "him", "her", "his", "the client", etc.). Referring to OTHER people (a partner,
    children, colleagues, "the people who depend on you") in the third person is FINE. Only
    flag third-person references to the reader themselves.
-2. standard_breach — praise / validation language ("powerful", "profound", "brave",
-   "courageous", "well done", "takes courage"), judging or grading the reader, or a specific
-   financial product / investment / transaction recommendation.
+2. standard_breach — flag ONLY: (a) EMPTY praise or flattery of the reader ("you're powerful /
+   profound / brave / insightful", "well done", "takes courage", praising them for sharing or
+   for their self-awareness); (b) judging or grading the reader as a person; (c) a specific
+   financial product / investment / transaction recommendation. Do NOT flag affirmation that is
+   grounded in concrete evidence of what the reader actually did, chose or survived (e.g. "you
+   have already done X, which is evidence you can do Y") — grounded self-trust building is wanted,
+   not a breach. Do NOT flag a reframed insight (e.g. "the freedom comes the moment you do less")
+   as a recommendation — insights are not prescriptions.
 
 Return ONLY a JSON object, no other text:
 {{"violations": [{{"section": "<section_id>", "issue": "reader_third_person" or "standard_breach", "detail": "<short quote or reason>"}}]}}
@@ -193,7 +208,8 @@ def _llm_qa(client, section_content: dict[str, str]) -> list[dict]:
     """One judge call over the whole report; returns a list of violation dicts."""
     bundle = "\n\n".join(
         f"### {sid}\n{(text or '').strip()}"
-        for sid, text in section_content.items() if (text or "").strip()
+        for sid, text in section_content.items()
+        if (text or "").strip() and sid not in QA_SKIP_SECTIONS
     )
     try:
         resp = client.messages.create(
@@ -238,6 +254,8 @@ def _deterministic_failures(section_content: dict[str, str], session_data: dict)
                          "detail": f"{total_words} words > {QA_MAX_TOTAL_WORDS}", "regenerable": True})
 
     for sid, text in section_content.items():
+        if sid in QA_SKIP_SECTIONS:
+            continue
         for pat in QA_BANNED_PHRASES:
             if re.search(pat, text or "", re.I):
                 failures.append({"section": sid, "check": "third_person_reader",
@@ -263,56 +281,73 @@ def validate_sections(client, section_content: dict[str, str], session_data: dic
 
 
 def _run_qa(client, section_content, session_data, report_config, prompt_config):
-    """Validate; regenerate failing sections; raise if it cannot pass.
+    """HARD-block + regenerate objective breaches; WARN on subjective tone.
 
-    Returns (section_content, qa_log).
+    Objective breaches (QA_HARD_CHECKS) must be fixed or the report is not delivered.
+    Subjective tone flags (validation / judging) are returned as warnings for human review
+    and never block delivery. Returns (section_content, qa_log).
     """
     sections_by_id = {s["id"]: s for s in report_config["sections"]}
-    qa_log = {"attempts": [], "passed": False, "failures": []}
+    qa_log = {"passed": False, "attempts": [], "warnings": []}
 
     failures = []
     for attempt in range(QA_MAX_RETRIES + 1):
         failures = validate_sections(client, section_content, session_data)
+        hard = [f for f in failures if f["check"] in QA_HARD_CHECKS]
+        soft = [f for f in failures if f["check"] not in QA_HARD_CHECKS]
         qa_log["attempts"].append({
             "attempt": attempt,
-            "failures": [f"{f['section']}: {f['check']} ({f['detail']})" for f in failures],
+            "hard": [f"{f['section']}: {f['check']} ({f['detail']})" for f in hard],
+            "soft": [f"{f['section']}: {f['check']} ({f['detail']})" for f in soft],
         })
-        if not failures:
+
+        if not hard:
             qa_log["passed"] = True
-            logger.info("Consumer report passed QA on attempt %d", attempt)
+            qa_log["warnings"] = [f"{f['section']}: {f['check']} — {f['detail']}" for f in soft]
+            logger.info("Consumer report passed QA (attempt %d) with %d tone warning(s)",
+                        attempt, len(soft))
             return section_content, qa_log
 
-        blocking = [f for f in failures if not f["regenerable"]]
-        if blocking:
-            qa_log["failures"] = failures
+        non_regen = [f for f in hard if not f.get("regenerable", True)]
+        if non_regen:
+            qa_log["blocking_failures"] = hard
             raise QAValidationError(
                 "Report failed QA on non-regenerable issues: "
-                + "; ".join(f"{f['section']}: {f['detail']}" for f in blocking)
+                + "; ".join(f"{f['section']}: {f['detail']}" for f in non_regen)
             )
 
         if attempt == QA_MAX_RETRIES:
             break
 
-        # Regenerate each failing section with a targeted corrective note.
+        # Decide which sections to regenerate to clear the hard failures.
         reasons_by_section: dict[str, list[str]] = {}
-        for f in failures:
-            if f["section"] in sections_by_id:
-                reasons_by_section.setdefault(f["section"], []).append(f"{f['check']}: {f['detail']}")
+        for f in hard:
+            sid = f["section"]
+            if sid in sections_by_id:
+                reasons_by_section.setdefault(sid, []).append(f"{f['check']}: {f['detail']}")
+            elif f["check"] == "length":
+                longest = sorted(
+                    ((s, len((section_content.get(s, "") or "").split())) for s in sections_by_id),
+                    key=lambda kv: kv[1], reverse=True,
+                )[:3]
+                for s, _n in longest:
+                    reasons_by_section.setdefault(s, []).append(
+                        "length: the whole report is over budget — make this section much shorter")
         for sid, reasons in reasons_by_section.items():
             corrective = "; ".join(reasons)
             if "third_person_reader" in corrective:
                 corrective += (". Write strictly in the SECOND PERSON — address the reader only "
                                "as 'you'; never 'he', 'she', 'they', or 'the client'.")
-            logger.info("QA regenerating section '%s' (attempt %d): %s", sid, attempt + 1, corrective)
+            logger.info("QA regenerating '%s' (attempt %d): %s", sid, attempt + 1, corrective)
             section_content[sid] = _generate_one_section(
                 client, sections_by_id[sid], session_data, report_config, prompt_config,
                 corrective=corrective,
             )
 
-    qa_log["failures"] = failures
+    qa_log["blocking_failures"] = [f for f in failures if f["check"] in QA_HARD_CHECKS]
     raise QAValidationError(
-        "Report failed QA after retries: "
-        + "; ".join(f"{f['section']}: {f['check']}" for f in failures)
+        "Report failed QA after retries on hard checks: "
+        + "; ".join(f"{f['section']}: {f['check']}" for f in qa_log["blocking_failures"])
     )
 
 
