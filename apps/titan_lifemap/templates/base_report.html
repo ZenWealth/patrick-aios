@@ -332,6 +332,16 @@
     <p class="report-date">{{ session.started_at[:10] if session.started_at else '' }}</p>
   </div>
 
+  {% if section_content.get('opening') %}
+  <div class="section">
+    <div class="section-content">
+      {% for paragraph in section_content['opening'].split('\n\n') %}
+      {% if paragraph.strip() %}<p>{{ paragraph.strip() }}</p>{% endif %}
+      {% endfor %}
+    </div>
+  </div>
+  {% endif %}
+
   {% if scores.core_transition %}
   <div class="core-transition">
     <p class="core-transition-label">Your Core Transition</p>
@@ -347,11 +357,12 @@
 
   {% for section in sections %}
   {% set content = section_content.get(section.id, '') %}
-  {% if content
+  {% if (content
         or (section.id == 'the_one_decision' and scores.the_one_decision)
         or (section.id == 'biggest_insight' and scores.biggest_insight)
         or (section.id == 'friction_diagnosis' and scores.friction_diagnosis)
-        or (section.id == 'clarity_score' and scores.clarity_components) %}
+        or (section.id == 'clarity_score' and scores.clarity_components))
+        and section.id not in ['opening', 'becoming'] %}
   <div class="section">
     <h2 class="section-title">{{ section.title }}</h2>
     <div class="section-content">
@@ -437,8 +448,19 @@
 
   {% if scores.the_conversation %}
   <div class="the-conversation">
-    <p class="the-conversation-heading">The Conversation I Think You Need to Have</p>
+    <p class="the-conversation-heading">One Conversation That Could Change Everything</p>
     <p class="the-conversation-body">{{ scores.the_conversation }}</p>
+  </div>
+  {% endif %}
+
+  {% if section_content.get('becoming') %}
+  <div class="section">
+    <h2 class="section-title">Who You're Becoming</h2>
+    <div class="section-content">
+      {% for paragraph in section_content['becoming'].split('\n\n') %}
+      {% if paragraph.strip() %}<p>{{ paragraph.strip() }}</p>{% endif %}
+      {% endfor %}
+    </div>
   </div>
   {% endif %}
 

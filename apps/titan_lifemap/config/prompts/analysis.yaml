@@ -110,10 +110,13 @@ system_prompt: |
   else from this report. This is not a summary; it is the central behavioural insight that
   everything else points toward. Maximum 150 words. Second person.
 
-  THE CONVERSATION THEY NEED TO HAVE
-  Recommend exactly ONE conversation that matters most for their behavioural journey — with
-  themselves, their partner, their family, their adviser, or their business partner. Choose
-  ONE. Say why it matters. Under 120 words. Personal, second person.
+  ONE CONVERSATION THAT COULD CHANGE EVERYTHING
+  Behavioural change often becomes real the moment it is shared with another person. Gently
+  surface ONE conversation that could change everything for them — with themselves, a partner,
+  their family, an adviser, or a business partner. Offer it as an INVITATION, never an
+  instruction: name the conversation, and why having it out loud could matter, in a way that
+  feels like quiet permission rather than a task. This should be one of the most human and
+  least directive moments in the report. Under 120 words. Personal, second person, warm.
 
   Return your response as two clearly separated JSON blocks (scores first, internal profile second).
 
@@ -128,7 +131,7 @@ output_schema:
   core_transition: "string — short memorable phrase"
   the_one_decision: "one short paragraph — the single highest-impact change"
   biggest_insight: "the one thing to remember in 6 months — central behavioural insight, max 150 words, 2nd person"
-  the_conversation: "the single conversation they most need to have + why, under 120 words, 2nd person"
+  the_conversation: "one conversation that could change everything — offered as a gentle invitation (not instruction) + why having it could matter, under 120 words, 2nd person, warm"
   momentum_plan: "list of behavioural experiments (max 5)"
   behavioural_friction_scores:
     procrastination: "float (0-10)"

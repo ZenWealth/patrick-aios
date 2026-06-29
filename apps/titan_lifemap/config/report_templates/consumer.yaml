@@ -3,11 +3,29 @@
 # The report a client receives after completing their discovery session.
 # Direct, personal, insight-led. Never contains hard financial data in raw form.
 # The Core Transition is the centrepiece — everything else hangs off it.
+#
+# Structured to the Titan LifeMap Report Standard (seven beats): the report should make
+# the reader feel deeply understood, reveal what they could not see, increase clarity,
+# restore hope, increase self-trust, and end on one next step and who they are becoming.
+# NOTE: sections `opening` and `becoming` are rendered specially by base_report.html
+# (opening above the Core Transition banner; becoming as the final note) and are skipped
+# in the main section loop. `whats_possible` renders in the loop in the position below.
 
 report_title: "Your Titan LifeMap"
 subtitle: "A personal clarity report from Sustain Momentum"
 
 sections:
+  - id: opening
+    title: "Where You Are Right Now"
+    instruction: |
+      Beat 1 — open the whole report by making them feel met, before any analysis. In 2-4
+      sentences, reflect back — in their own words and the things they care about — the
+      situation they are standing in and what they came here hoping to resolve. Do NOT open by
+      cataloguing what they have built or achieved — that edges into praise and holds them at
+      arm's length; open instead on the human question they actually arrived with. No diagnosis
+      yet, no praise, no thanking them for sharing. They should feel received before they feel
+      analysed. This is the first thing they read, above the Core Transition.
+
   - id: core_transition
     title: "The Shift You're Making"
     source_field: core_transition
@@ -90,14 +108,6 @@ sections:
       traceable — they should understand why the total is what it is. A starting point,
       not a grade.
 
-  - id: the_one_decision
-    title: "The One Decision That Matters Most"
-    source_field: the_one_decision
-    instruction: |
-      The decision itself is displayed directly in this section. Write at most ONE short
-      sentence of lead-in — do not restate or expand the decision. This is the single change
-      with the most leverage; let it stand on its own.
-
   - id: biggest_insight
     title: "The Biggest Insight"
     source_field: biggest_insight
@@ -106,21 +116,48 @@ sections:
       sentence of lead-in — do not restate or expand it. This is the one thing they should
       remember in six months; let it stand on its own.
 
+  - id: whats_possible
+    title: "It's Genuinely Possible"
+    instruction: |
+      Beat 5 — restore hope and build trust in their OWN judgement, grounded and never
+      cheerleading. Using only what they have shown, name the real evidence that the change
+      is within reach: strengths they already have, hard things they have already done, how
+      much closer they may be than they feel. Reflect their own good judgement back to them —
+      they have understood more than they give themselves credit for. They should leave
+      trusting themselves more, not this report more. 1-2 paragraphs. Evidence, not
+      reassurance; no flattery.
+
+  - id: the_one_decision
+    title: "The One Decision That Matters Most"
+    source_field: the_one_decision
+    instruction: |
+      The decision itself is displayed directly in this section. Write at most ONE short
+      sentence of lead-in — do not restate or expand the decision. This is the single change
+      with the most leverage; let it stand on its own.
+
   - id: momentum_plan
-    title: "Your Titan Momentum Plan"
+    title: "If You Want to Go Further"
     source_field: momentum_plan
     instruction: |
-      The five Momentum Plan actions are listed in full directly below this text — DO NOT
-      repeat, number, or restate them. Write only a 2-3 sentence introduction that frames
-      why these specific actions, in this order, follow from what they revealed. Then let
-      the list speak for itself.
+      The five actions are listed in full directly below this text — DO NOT repeat, number,
+      or restate them. These are OPTIONAL ways to keep going once the one decision above is
+      made; frame them exactly that way. Write only a 1-2 sentence introduction positioning
+      them as a supporting sequence that follows the one decision — not the headline. The one
+      decision is the priority; this is the path that follows it.
+
+  - id: becoming
+    title: "Who You're Becoming"
+    instruction: |
+      Beat 7 — close the report on identity, looking forward. In 2-3 sentences, name —
+      without grandeur or praise — the person their choices are beginning to make them into,
+      framed as already underway, not a distant goal. This is rendered as the final note of
+      the report. Leave them with a quiet sense that the change is possible and theirs.
 
   - id: next_steps
-    title: "What Happens Next"
+    title: "Ways Forward"
     instruction: |
-      Open with this idea, in your own words: this report is not the end of the process —
-      it is the beginning of a different conversation; discovery creates awareness, and
-      progress comes from acting on what has become visible. Then briefly lay out the three
-      routes: sitting with the report themselves, working with a coach, or an introduction
-      to a financial adviser. Options, not pressure; calm and non-salesy. Close on the Core
-      Transition, not a goodbye.
+      A brief, calm footer — 2-3 sentences at most. Awareness only matters if something
+      changes; lightly note the three ways forward (sitting with the report themselves,
+      working with a coach, or an introduction to a financial adviser) as options, never
+      pressure. Do NOT try to close the report here — it has already closed on who they are
+      becoming. This is only a quiet, practical note.
