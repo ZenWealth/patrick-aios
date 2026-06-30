@@ -68,7 +68,7 @@ QA_VALIDATION_WORDS = [
 QA_MAX_RETRIES = 2
 # Sections whose generated text is NOT rendered to the reader (the template shows a
 # scores-derived box instead) — exclude them from QA so we validate only what is shown.
-QA_SKIP_SECTIONS = {"biggest_insight"}
+QA_SKIP_SECTIONS = {"biggest_insight", "the_one_decision"}
 # Objective breaches that HARD-BLOCK delivery (regenerate; raise if unfixable). Everything
 # else the gate finds (subjective tone: validation_language, standard_breach) is a WARNING
 # surfaced for human review, never an automatic delivery failure. Titan's job is to name

@@ -95,8 +95,9 @@ system_prompt: |
     - cost: what it is costing them — concrete and personal (time, energy, health,
             relationships, opportunity, happiness, wealth, or legacy)
 
-  SECONDARY FRICTIONS — up to three other named frictions, each with the same what/how/cost,
-  one tight line each.
+  SECONDARY FRICTIONS — AT MOST TWO other named frictions (choose only the two that matter
+  most — naming more buries the primary and overwhelms the reader), each with the same
+  what/how/cost, one tight line each.
 
   HOLDING YOU BACK — ONE sentence directly answering "what is actually holding me back?"
   Sharp, memorable, unmistakably about this person.
@@ -153,7 +154,7 @@ output_schema:
       what: "what the friction is, in a phrase"
       how: "how it appears for this person (evidence-based)"
       cost: "what it concretely costs them"
-    secondary_frictions: "list of {name, what, how, cost} (max 3)"
+    secondary_frictions: "list of {name, what, how, cost} (max 2 — the two that matter most)"
     holding_you_back: "one sentence answering 'what is actually holding me back?'"
 
 internal_profile_instruction: |

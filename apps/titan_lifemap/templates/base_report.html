@@ -391,7 +391,7 @@
       </table>
       {% endif %}
 
-      {% if section.id != 'biggest_insight' %}
+      {% if section.id not in ['biggest_insight', 'the_one_decision'] %}
       {% for paragraph in content.split('\n\n') %}
       {% if paragraph.strip() %}
       <p>{{ paragraph.strip() }}</p>
